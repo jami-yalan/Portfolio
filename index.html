@@ -1812,13 +1812,13 @@
   function openProject(index) {
     const cards = document.querySelectorAll('.case-card');
     if (!cards[index]) return;
-    // Close all, open the target
+    const wasOpen = document.querySelector('.case-card.open') !== null;
     document.querySelectorAll('.case-card.open').forEach(c => c.classList.remove('open'));
     cards[index].classList.add('open');
-    // Scroll after a short delay so the accordion has time to open
+    // If another card was open, wait for its collapse animation (0.55s) before scrolling
     setTimeout(() => {
       cards[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 80);
+    }, wasOpen ? 580 : 80);
   }
 
   /* ── Lightbox ───────────────────────────────────────────── */
@@ -1903,14 +1903,19 @@
 
   /* ── Case study accordion ───────────────────────────────── */
   function toggleCase(header) {
-    const card   = header.closest('.case-card');
-    const isOpen = card.classList.contains('open');
+    const card      = header.closest('.case-card');
+    const isOpen    = card.classList.contains('open');
+    const wasOther  = !isOpen && document.querySelector('.case-card.open') !== null;
 
-    // Close all first
     document.querySelectorAll('.case-card.open').forEach(c => c.classList.remove('open'));
 
-    // Re-open if it wasn't already open
-    if (!isOpen) card.classList.add('open');
+    if (!isOpen) {
+      card.classList.add('open');
+      // Wait for any collapsing accordion to finish before scrolling
+      setTimeout(() => {
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, wasOther ? 580 : 80);
+    }
   }
 
   /* ── Intersection Observer → fade-up ────────────────────── */
