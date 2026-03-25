@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-961H1NQEWK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-961H1NQEWK');
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jami Yalan — Service Designer</title>
@@ -636,7 +644,7 @@
       overflow: hidden;
       transition: max-height .55s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .case-card.open .case-body { max-height: 2600px; }
+    .case-card.open .case-body { max-height: 6000px; }
 
     .case-body-inner {
       padding: 2rem 2.5rem 2.5rem;
@@ -857,6 +865,10 @@
       object-position: center top;
       display: block;
     }
+    /* Royal London + Interbank research: anchor left, overflow right */
+    .case-card:nth-child(1) .research-stretch img,
+    .case-card:nth-child(2) .research-stretch img { object-position: left top; }
+
     .case-video-block { cursor: zoom-in; }
 
     /* Takeaways lives below the main grid, full-width */
@@ -884,13 +896,40 @@
     @media (max-width: 768px) {
       .lightbox-btn { width: 38px; height: 38px; font-size: 1rem; }
       .case-grid-3 { grid-template-columns: 1fr; }
-      .pair-result img { height: 200px; }
-      .pair-journey img { height: 200px; }
+      /* heights overridden by .case-img-pair flex-direction:column rules below */
       .research-stretch { display: block; }
       .research-stretch img,
       .research-stretch video { flex: none; height: auto; object-fit: fill; }
     }
     @media (min-width: 769px) and (max-width: 1024px) {
+      /* Hero — reduce min-height so there's no giant gap below content */
+      .hero { min-height: auto; padding: 6rem 2.5rem 4rem; }
+
+      /* Folder animation — scale down so it fits the narrower right column */
+      .folder-icon-img { width: 130px; }
+      .cards-stack { height: 380px; }
+      .folder-item:nth-child(2) { left: 120px; }
+      .folder-item:nth-child(3) { left: 235px; }
+      .fcard img { width: 78px; }
+      .fcard-2 img { width: 110px; }
+      .folder-item:nth-child(1) .fcard-2 img { width: 92px; }
+      .folder-item:nth-child(2) .fcard-2 img { width: 134px; }
+      .folder-item:nth-child(3) .fcard-2 img { width: 120px; }
+      .fcard-3 img { width: 55px; }
+      .folder-imgs { width: 250px; }
+
+      /* Case grid — collapse to 1 col so research image drops below text */
+      .case-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .research-stretch { align-self: auto; }
+      .research-stretch img,
+      .research-stretch video { flex: none; height: auto; min-height: 240px; object-fit: cover; }
+
+      /* Result + Journey — stack vertically on tablet */
+      .case-img-pair { flex-direction: column; }
+      .pair-result { flex-shrink: unset; }
+      .pair-result img { height: 300px; width: 100%; object-fit: contain; object-position: center; }
+      .pair-journey img { height: 300px; width: 100%; object-fit: cover; object-position: center top; }
+
       .case-grid-3 { grid-template-columns: 1fr 1fr; }
       .case-grid-3 .case-block-img { grid-column: 1 / -1; max-height: 260px; overflow: hidden; }
       .case-grid-3 .case-block-img img { height: 260px; object-fit: cover; }
@@ -1159,7 +1198,10 @@
       .case-body-inner { padding: 1.5rem 1.5rem 3rem; }
       .case-grid { grid-template-columns: 1fr; gap: 2rem; }
       .case-takeaways { margin-top: 0; }
-      .case-img-pair { margin: 1.5rem 0; }
+      .case-img-pair { margin: 1.5rem 0; flex-direction: column; }
+      .pair-result { flex-shrink: unset; }
+      .pair-result img { height: 260px; width: 100%; object-fit: contain; object-position: center; }
+      .pair-journey img { height: 260px; width: 100%; object-fit: cover; object-position: center top; }
 
       .beyond-grid { grid-template-columns: 1fr; gap: 2.5rem; }
 
@@ -1350,7 +1392,6 @@
           the trust and shared understanding that makes change actually stick. And once you have
           that, the most valuable thing I do is reframe. Helping organisations question their own
           assumptions, uncover where the real problem is hiding, and plan a strategy around that.
-          That is where design earns its place.
         </p>
       </div>
 
