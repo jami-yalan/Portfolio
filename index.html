@@ -1156,7 +1156,7 @@
 
       .case-header { padding: 1.5rem; gap: 1rem; }
       .case-num { font-size: 1.8rem; }
-      .case-body-inner { padding: 1.5rem; }
+      .case-body-inner { padding: 1.5rem 1.5rem 3rem; }
       .case-grid { grid-template-columns: 1fr; gap: 2rem; }
       .case-takeaways { margin-top: 0; }
       .case-img-pair { margin: 1.5rem 0; }
@@ -1822,14 +1822,13 @@
 
   /* ── Scroll to card accounting for a collapsing card above it ── */
   function scrollToCard(card, collapsingCard) {
-    let targetY = card.getBoundingClientRect().top + window.scrollY;
-    // If the collapsing card is above the target, its body will shrink and
-    // shift the target upward — pre-subtract that height so we land correctly
-    if (collapsingCard &&
-        collapsingCard.compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING) {
-      targetY -= collapsingCard.querySelector('.case-body').getBoundingClientRect().height;
-    }
-    setTimeout(() => window.scrollTo({ top: targetY, behavior: 'smooth' }), 50);
+    // overflow-anchor:none on .case-list stops the browser adjusting scroll
+    // during the collapse. We wait for the transition to finish (550ms + buffer)
+    // then do a single clean scroll to the card's settled position.
+    const delay = collapsingCard ? 580 : 80;
+    setTimeout(() => {
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, delay);
   }
 
   /* ── Open project from hero folder click ────────────────── */
@@ -1924,15 +1923,14 @@
 
   /* ── Case study accordion ───────────────────────────────── */
   function toggleCase(header) {
-    const card     = header.closest('.case-card');
-    const isOpen   = card.classList.contains('open');
-    const openCard = document.querySelector('.case-card.open');
-
+    const card   = header.closest('.case-card');
+    const isOpen = card.classList.contains('open');
     document.querySelectorAll('.case-card.open').forEach(c => c.classList.remove('open'));
-
     if (!isOpen) {
       card.classList.add('open');
-      scrollToCard(card, openCard);
+      // Instantly place the card at the top of the viewport, then browser
+      // scroll anchoring keeps it there as the collapsing card shrinks above.
+      requestAnimationFrame(() => card.scrollIntoView({ behavior: 'instant', block: 'start' }));
     }
   }
 
