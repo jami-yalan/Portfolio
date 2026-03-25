@@ -4,6 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jami Yalan — Service Designer</title>
+  <meta name="description" content="Service designer with a background in research, systems thinking and design futures. Based in Edinburgh." />
+  <!-- Open Graph / WhatsApp / LinkedIn -->
+  <meta property="og:title" content="Jami Yalan — Service Designer" />
+  <meta property="og:description" content="Service designer with a background in research, systems thinking and design futures. Based in Edinburgh." />
+  <meta property="og:image" content="https://jami-yalan.github.io/Portfolio/Social.png" />
+  <meta property="og:url" content="https://jamy.design" />
+  <meta property="og:type" content="website" />
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Jami Yalan — Service Designer" />
+  <meta name="twitter:description" content="Service designer with a background in research, systems thinking and design futures. Based in Edinburgh." />
+  <meta name="twitter:image" content="https://jami-yalan.github.io/Portfolio/Social.png" />
   <link rel="icon" href="favicon.png" type="image/png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1808,17 +1820,26 @@
 
   function closeNav() { mobileNav.classList.remove('open'); }
 
+  /* ── Scroll to card accounting for a collapsing card above it ── */
+  function scrollToCard(card, collapsingCard) {
+    let targetY = card.getBoundingClientRect().top + window.scrollY;
+    // If the collapsing card is above the target, its body will shrink and
+    // shift the target upward — pre-subtract that height so we land correctly
+    if (collapsingCard &&
+        collapsingCard.compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING) {
+      targetY -= collapsingCard.querySelector('.case-body').getBoundingClientRect().height;
+    }
+    setTimeout(() => window.scrollTo({ top: targetY, behavior: 'smooth' }), 50);
+  }
+
   /* ── Open project from hero folder click ────────────────── */
   function openProject(index) {
     const cards = document.querySelectorAll('.case-card');
     if (!cards[index]) return;
-    const wasOpen = document.querySelector('.case-card.open') !== null;
+    const openCard = document.querySelector('.case-card.open');
     document.querySelectorAll('.case-card.open').forEach(c => c.classList.remove('open'));
     cards[index].classList.add('open');
-    // If another card was open, wait for its collapse animation (0.55s) before scrolling
-    setTimeout(() => {
-      cards[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, wasOpen ? 580 : 80);
+    scrollToCard(cards[index], openCard);
   }
 
   /* ── Lightbox ───────────────────────────────────────────── */
@@ -1903,18 +1924,15 @@
 
   /* ── Case study accordion ───────────────────────────────── */
   function toggleCase(header) {
-    const card      = header.closest('.case-card');
-    const isOpen    = card.classList.contains('open');
-    const wasOther  = !isOpen && document.querySelector('.case-card.open') !== null;
+    const card     = header.closest('.case-card');
+    const isOpen   = card.classList.contains('open');
+    const openCard = document.querySelector('.case-card.open');
 
     document.querySelectorAll('.case-card.open').forEach(c => c.classList.remove('open'));
 
     if (!isOpen) {
       card.classList.add('open');
-      // Wait for any collapsing accordion to finish before scrolling
-      setTimeout(() => {
-        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, wasOther ? 580 : 80);
+      scrollToCard(card, openCard);
     }
   }
 
