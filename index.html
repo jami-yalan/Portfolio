@@ -910,11 +910,17 @@
       .fcard-3 img { width: 55px; }
       .folder-imgs { width: 250px; }
 
-      /* Result + Journey — stack vertically on tablet, same as mobile */
+      /* Case grid — collapse to 1 col so research image drops below text */
+      .case-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .research-stretch { align-self: auto; }
+      .research-stretch img,
+      .research-stretch video { flex: none; height: auto; min-height: 240px; object-fit: cover; }
+
+      /* Result + Journey — stack vertically on tablet */
       .case-img-pair { flex-direction: column; }
       .pair-result { flex-shrink: unset; }
-      .pair-result img { height: auto; width: 100%; max-height: 320px; object-fit: contain; }
-      .pair-journey img { height: 240px; width: 100%; }
+      .pair-result img { height: 300px; width: 100%; object-fit: contain; object-position: center; }
+      .pair-journey img { height: 300px; width: 100%; object-fit: cover; object-position: center top; }
 
       .case-grid-3 { grid-template-columns: 1fr 1fr; }
       .case-grid-3 .case-block-img { grid-column: 1 / -1; max-height: 260px; overflow: hidden; }
@@ -1186,8 +1192,8 @@
       .case-takeaways { margin-top: 0; }
       .case-img-pair { margin: 1.5rem 0; flex-direction: column; }
       .pair-result { flex-shrink: unset; }
-      .pair-result img { height: auto; width: 100%; max-height: 320px; object-fit: contain; }
-      .pair-journey img { height: 220px; width: 100%; }
+      .pair-result img { height: 260px; width: 100%; object-fit: contain; object-position: center; }
+      .pair-journey img { height: 260px; width: 100%; object-fit: cover; object-position: center top; }
 
       .beyond-grid { grid-template-columns: 1fr; gap: 2.5rem; }
 
