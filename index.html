@@ -857,6 +857,10 @@
       object-position: center top;
       display: block;
     }
+    /* Royal London + Interbank research: anchor left, overflow right */
+    .case-card:nth-child(1) .research-stretch img,
+    .case-card:nth-child(2) .research-stretch img { object-position: left top; }
+
     .case-video-block { cursor: zoom-in; }
 
     /* Takeaways lives below the main grid, full-width */
@@ -906,9 +910,11 @@
       .fcard-3 img { width: 55px; }
       .folder-imgs { width: 250px; }
 
-      /* Result + Journey — reduce height so they fit side by side on tablet */
-      .pair-result img { height: 260px; }
-      .pair-journey img { height: 260px; }
+      /* Result + Journey — stack vertically on tablet, same as mobile */
+      .case-img-pair { flex-direction: column; }
+      .pair-result { flex-shrink: unset; }
+      .pair-result img { height: auto; width: 100%; max-height: 320px; object-fit: contain; }
+      .pair-journey img { height: 240px; width: 100%; }
 
       .case-grid-3 { grid-template-columns: 1fr 1fr; }
       .case-grid-3 .case-block-img { grid-column: 1 / -1; max-height: 260px; overflow: hidden; }
