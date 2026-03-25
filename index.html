@@ -1,0 +1,1966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jami Yalan — Service Designer</title>
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+
+    /* ─── Fonts ──────────────────────────────────────────────── */
+    @font-face {
+      font-family: 'Nimbus Sans';
+      src: url('Fonts/nimbus-sans-extd.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nimbus Sans';
+      src: url('Fonts/nimbus-sans-extd-light.otf') format('opentype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nimbus Sans';
+      src: url('Fonts/nimbus-sans-extd-bold.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Nimbus Sans';
+      src: url('Fonts/nimbus-sans-extd-black.otf') format('opentype');
+      font-weight: 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* ─── Reset & Custom Properties ─────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --green:       #47E975;
+      --purple:      #541675;
+      --bg:          #FFFDF8;
+      --text:        #3a3a3a;
+      --muted:       #767676;
+      --border:      rgba(84, 22, 117, 0.12);
+      --border-soft: rgba(0, 0, 0, 0.07);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 300;
+      font-synthesis: none;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ─── Typography ─────────────────────────────────────────── */
+    h1, h2, h3, .bold {
+      font-family: 'Nimbus Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 700;
+    }
+    .light { font-weight: 300; }
+    .green  { color: var(--green); }
+    .purple { color: var(--purple); }
+
+    /* ─── Navigation ─────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.1rem 4rem;
+      background: rgba(255,253,248,0.9);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      transition: opacity .2s;
+    }
+    .nav-logo img { height: 54px; width: auto; display: block; }
+    .nav-logo:hover { opacity: .72; }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-family: 'Nimbus Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.85rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: var(--text);
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--purple); }
+
+    /* separator before Copy email */
+    li.nav-sep-li {
+      display: flex;
+      align-items: center;
+      border-left: 1px solid var(--border);
+      padding-left: 2.5rem;
+    }
+
+    .nav-email-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: 'Nimbus Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.85rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: var(--purple);
+      cursor: pointer;
+      transition: color .25s ease, opacity .18s ease;
+      white-space: nowrap;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+    }
+    .nav-email-btn.copied { color: var(--green); font-weight: 700; }
+    .nav-email-btn.fading { opacity: 0.1; }
+
+    /* hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all .3s;
+    }
+
+    /* mobile nav full-screen */
+    .nav-mobile {
+      display: none;
+      flex-direction: column;
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 300;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 4rem 2.5rem;
+      gap: 2rem;
+    }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a {
+      text-decoration: none;
+      font-family: 'Nimbus Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1.4rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: var(--text);
+      transition: color .2s;
+    }
+    .nav-mobile a:hover { color: var(--purple); }
+    .nav-mobile .nav-email-btn {
+      font-family: 'Nimbus Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1.4rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+    }
+    .nav-mobile .nav-email-btn.copied { color: var(--green); font-weight: 700; }
+    .nav-mobile-sep {
+      width: 100%;
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: .4rem 0;
+    }
+    .nav-mobile-close {
+      position: absolute;
+      top: 1.5rem; right: 1.5rem;
+      font-size: 1.5rem;
+      background: none; border: none;
+      cursor: pointer;
+      color: var(--text);
+      line-height: 1;
+      font-family: 'Nimbus Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 300;
+    }
+
+    /* ─── Section base ───────────────────────────────────────── */
+    section { padding: 8rem 4rem; }
+
+    .section-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-size: .72rem;
+      font-weight: 300;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 1rem;
+    }
+    .section-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 20px; height: 1px;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4.5vw, 3.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      margin-bottom: 3rem;
+    }
+
+    /* ─── Fade-up ────────────────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── HERO ───────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem 4rem 4rem;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .hero-text h1 {
+      font-size: clamp(3.8rem, 11vw, 10rem);
+      line-height: .88;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.5rem;
+    }
+    .name-line2 {
+      display: block;
+      color: var(--green);
+    }
+
+    .hero-subtitle {
+      font-size: clamp(.9rem, 1.4vw, 1.1rem);
+      font-weight: 300;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .6rem;
+    }
+    .hero-tagline {
+      font-weight: 300;
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 34ch;
+      line-height: 1.75;
+    }
+
+    /* ── Folder cards ─────────────────────────────────────────── */
+    .cards-stack {
+      position: relative;
+      width: 100%;
+      height: 460px;
+      overflow: visible;
+    }
+
+    /* each folder — positioned absolutely for Spencer Gabor spread */
+    .folder-item {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      bottom: 0;
+    }
+
+    /* spread: overlapping, varying heights, slight rotations */
+    .folder-item:nth-child(1) {
+      left: 0px;
+      z-index: 1;
+    }
+    .folder-item:nth-child(2) {
+      left: 150px;
+      bottom: 28px; /* higher */
+      z-index: 2;
+    }
+    .folder-item:nth-child(3) {
+      left: 295px;
+      bottom: -12px; /* lower */
+      z-index: 3;
+    }
+    .folder-item:hover { z-index: 20; }
+
+    /* the actual folder PNG image */
+    .folder-icon-img {
+      width: 164px;
+      height: auto;
+      display: block;
+      transition: transform .38s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    /* individual folder tilts */
+    .folder-item:nth-child(1) .folder-icon-img { transform: rotate(-5deg); }
+    .folder-item:nth-child(2) .folder-icon-img { transform: rotate(4.5deg); }
+    .folder-item:nth-child(3) .folder-icon-img { transform: rotate(-2deg); }
+
+    .folder-item:nth-child(1):hover .folder-icon-img { transform: rotate(-5deg)  translateY(-8px) scale(1.04); }
+    .folder-item:nth-child(2):hover .folder-icon-img { transform: rotate(4.5deg) translateY(-8px) scale(1.04); }
+    .folder-item:nth-child(3):hover .folder-icon-img { transform: rotate(-2deg)  translateY(-8px) scale(1.04); }
+
+    /* ---- flying images container ---- */
+    .folder-imgs {
+      position: absolute;
+      bottom: 60px; /* roughly top of folder body */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      pointer-events: none;
+    }
+
+    /* wrapper for each flying card */
+    .fcard {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px) scale(0.3);
+      opacity: 0;
+      transition: transform .58s cubic-bezier(0.34,1.56,0.64,1),
+                  opacity .4s ease;
+    }
+    .fcard-1 { transition-delay: .03s; }
+    .fcard-2 { transition-delay: .09s; }
+    .fcard-3 { transition-delay: .14s; }
+
+    /* images inside fcard — natural aspect ratio, no crop */
+    .fcard img {
+      display: block;
+      width: 104px;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.24);
+    }
+    /* center image bigger — keeps aspect ratio but looks more prominent */
+    .fcard-2 img {
+      width: 132px;
+    }
+    /* per-project result sizes */
+    .folder-item:nth-child(1) .fcard-2 img { width: 118px; } /* Royal London — slightly smaller */
+    .folder-item:nth-child(2) .fcard-2 img { width: 176px; } /* Interbank — bigger */
+    .folder-item:nth-child(3) .fcard-2 img { width: 160px; } /* NHS — bigger */
+
+    /* tool icon — smaller */
+    .fcard-3 img {
+      width: 68px;
+      border-radius: 14px;
+    }
+    /* white bg for icons with transparent/semi-transparent backgrounds */
+    .folder-item:nth-child(1) .fcard-3 img { background: #fff; } /* UserTesting */
+    .folder-item:nth-child(2) .fcard-3 img { background: #fff; } /* Pencil */
+
+    /* hover: fan up in three directions */
+    .folder-item:hover .fcard-1 {
+      transform: translateX(calc(-50% - 64px)) translateY(-172px) rotate(-14deg);
+      opacity: 1;
+    }
+    .folder-item:hover .fcard-2 {
+      transform: translateX(-50%) translateY(-185px) rotate(2deg);
+      opacity: 1;
+    }
+    .folder-item:hover .fcard-3 {
+      transform: translateX(calc(-50% + 58px)) translateY(-163px) rotate(13deg);
+      opacity: 1;
+    }
+
+    /* ---- label below folder ---- */
+    .folder-label {
+      margin-top: .6rem;
+      text-align: center;
+    }
+    .folder-name {
+      font-family: 'Nimbus Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 700;
+      font-size: .78rem;
+      color: var(--text);
+      letter-spacing: .02em;
+    }
+    .folder-sub {
+      font-weight: 300;
+      font-size: .64rem;
+      color: var(--muted);
+      margin-top: .12rem;
+    }
+
+    /* scroll cue */
+    .scroll-cue {
+      margin-top: 4rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-size: .72rem;
+      font-weight: 300;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .scroll-bar {
+      width: 40px; height: 1px;
+      background: var(--green);
+      animation: spulse 2.2s ease-in-out infinite;
+    }
+    @keyframes spulse {
+      0%,100% { width:40px; opacity:1; }
+      50%      { width:64px; opacity:.5; }
+    }
+
+    /* ─── ABOUT ──────────────────────────────────────────────── */
+    .about { border-top: 1px solid var(--border-soft); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 7rem;
+      align-items: start;
+    }
+
+    .about-intro p {
+      font-size: 1.08rem;
+      font-weight: 300;
+      line-height: 1.82;
+      margin-bottom: 1.2rem;
+    }
+    .about-intro p strong {
+      font-weight: 900;
+      color: var(--purple);
+    }
+
+    /* passion chips */
+    .passion-block { margin-top: 2.5rem; }
+    .block-label {
+      font-size: .7rem;
+      font-weight: 300;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: .45rem; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      line-height: 1;
+      padding: .38rem 1rem .32rem;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: .8rem;
+      font-weight: 300;
+      font-family: 'Poppins', sans-serif;
+      cursor: default;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+    .chip:hover {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    /* experience */
+    .exp-block { margin-bottom: 3rem; }
+    .exp-item {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 1.5rem;
+      padding-bottom: 1.8rem;
+      margin-bottom: 1.8rem;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .exp-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .exp-year {
+      font-size: .78rem;
+      font-weight: 300;
+      color: var(--muted);
+      padding-top: .15rem;
+      line-height: 1.4;
+    }
+    .exp-role { font-size: 1rem; font-weight: 900; margin-bottom: .15rem; }
+    .exp-company {
+      font-size: .82rem;
+      color: var(--purple);
+      font-weight: 300;
+      margin-bottom: .45rem;
+      letter-spacing: .03em;
+    }
+    .exp-desc {
+      font-size: .88rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* skills */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .skill-box {
+      padding: 1.3rem 1.4rem;
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      transition: border-color .25s;
+    }
+    .skill-box:hover { border-color: var(--green); }
+    .skill-box h4 {
+      font-size: .68rem;
+      font-weight: 900;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: .7rem;
+    }
+    .skill-box ul { list-style: none; }
+    .skill-box li {
+      font-size: .86rem;
+      font-weight: 300;
+      color: var(--muted);
+      padding: .2rem 0;
+      border-bottom: 1px solid rgba(0,0,0,.04);
+    }
+    .skill-box li:last-child { border-bottom: none; }
+
+    /* ─── WORK ───────────────────────────────────────────────── */
+    .work { border-top: 1px solid var(--border-soft); }
+
+    .case-list { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .case-card {
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color .3s;
+    }
+    .case-card:hover { border-color: rgba(84,22,117,.3); }
+    .case-card.open  { border-color: var(--purple); }
+
+    .case-header {
+      display: grid;
+      grid-template-columns: 56px 1fr 40px;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 2rem 2.5rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .case-num {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: var(--green);
+      line-height: 1;
+    }
+    .case-title { font-size: 1.3rem; font-weight: 900; margin-bottom: .2rem; }
+    .case-org {
+      font-size: .78rem;
+      font-weight: 300;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--purple);
+    }
+    .case-toggle {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: transform .4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  background .2s, border-color .2s, color .2s;
+    }
+    .case-card.open .case-toggle {
+      transform: rotate(45deg);
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    .case-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .55s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .case-card.open .case-body { max-height: 2600px; }
+
+    .case-body-inner {
+      padding: 2rem 2.5rem 2.5rem;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .case-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+    }
+
+    .case-block { margin-bottom: 1.8rem; }
+    .case-block:last-child { margin-bottom: 0; }
+    .case-block-label {
+      font-size: .68rem;
+      font-weight: 900;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: .65rem;
+    }
+    .case-block p {
+      font-size: .92rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.72;
+    }
+    .case-block ul { list-style: none; }
+    .case-block ul li {
+      font-size: .9rem;
+      font-weight: 300;
+      color: var(--muted);
+      padding: .28rem 0 .28rem 1.1rem;
+      position: relative;
+      line-height: 1.5;
+    }
+    .case-block ul li::before {
+      content: '→';
+      position: absolute; left: 0;
+      color: var(--green);
+      font-size: .78rem;
+    }
+
+    .outcome-chips { display: flex; flex-wrap: wrap; gap: .45rem; }
+    .outcome-chip {
+      padding: .3rem .85rem;
+      background: rgba(71,233,117,.09);
+      border: 1px solid rgba(71,233,117,.28);
+      border-radius: 100px;
+      font-size: .78rem;
+      font-weight: 300;
+    }
+
+    /* ─── Case gallery strip ────────────────────────────────── */
+    .case-gallery {
+      margin-top: 2rem;
+      display: flex;
+      gap: .75rem;
+      overflow-x: auto;
+      padding-bottom: .5rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .case-gallery::-webkit-scrollbar { height: 4px; }
+    .case-gallery::-webkit-scrollbar-track { background: transparent; }
+    .case-gallery::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .case-gallery img {
+      height: 200px;
+      width: auto;
+      flex-shrink: 0;
+      border-radius: 10px;
+      object-fit: cover;
+      cursor: zoom-in;
+      transition: transform .25s ease, box-shadow .25s ease;
+      box-shadow: 0 4px 16px rgba(0,0,0,.10);
+    }
+    .case-gallery img:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 28px rgba(0,0,0,.18);
+    }
+
+    /* ─── Lightbox modal ─────────────────────────────────────── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: rgba(255,255,255,.96);
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+    .lightbox.open { display: flex; }
+
+    .lightbox-img-wrap {
+      position: relative;
+      max-width: 90vw;
+      max-height: 88vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox-img-wrap img,
+    .lightbox-img-wrap video {
+      max-width: calc(100vw - 200px);
+      max-height: 82vh;
+      border-radius: 10px;
+      box-shadow: 0 12px 48px rgba(0,0,0,.18);
+      object-fit: contain;
+      display: block;
+    }
+    /* toggle image vs video in lightbox */
+    #lbWrap:not(.is-video) #lbVideo { display: none; }
+    #lbWrap.is-video #lbImg { display: none; }
+
+    .lightbox-btn {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,.7);
+      border: 1.5px solid var(--purple);
+      color: var(--purple);
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+      z-index: 1;
+    }
+    .lightbox-btn:hover { background: rgba(84,22,117,.08); }
+    .lightbox-prev { left: clamp(12px, 3vw, 40px); }
+    .lightbox-next { right: clamp(12px, 3vw, 40px); }
+
+    .lightbox-close {
+      position: fixed;
+      top: 1.2rem; right: 1.4rem;
+      background: rgba(255,255,255,.7);
+      border: 1.5px solid var(--purple);
+      color: var(--purple);
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+      z-index: 1;
+    }
+    .lightbox-close:hover { background: rgba(84,22,117,.08); }
+
+    .lightbox-counter {
+      position: fixed;
+      bottom: 1.4rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--muted);
+      font-size: .78rem;
+      letter-spacing: .1em;
+      font-weight: 300;
+    }
+
+    /* ─── Inline image break ─────────────────────────────────── */
+    .case-img-break {
+      margin: 2rem 0;
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: zoom-in;
+      box-shadow: 0 8px 40px rgba(0,0,0,.18);
+      transition: transform .35s cubic-bezier(0.34,1.56,0.64,1), box-shadow .35s ease;
+    }
+    .case-img-break:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 56px rgba(0,0,0,.26);
+    }
+    .case-img-break img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* 3-col grid: Design Process | Research Image | Solution */
+    .case-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2.5rem;
+    }
+    .case-block-img {
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: zoom-in;
+      align-self: start;
+      box-shadow: 0 8px 40px rgba(0,0,0,.18);
+      transition: transform .35s cubic-bezier(0.34,1.56,0.64,1), box-shadow .35s ease;
+    }
+    .case-block-img:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 56px rgba(0,0,0,.26);
+    }
+    .case-block-img img { width: 100%; height: auto; display: block; }
+
+    /* Flat-grid layout: direct .case-block children need no bottom margin (gap handles it) */
+    .case-grid > .case-block,
+    .case-grid > .case-block-img { margin-bottom: 0; }
+
+    /* Research image stretches to match Design Process row height */
+    .research-stretch {
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+    }
+    .research-stretch img,
+    .research-stretch video {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .case-video-block { cursor: zoom-in; }
+
+    /* Takeaways lives below the main grid, full-width */
+    .case-takeaways { margin-top: 1.5rem; }
+
+    /* Result + Journey side by side — journey dominates */
+    .case-img-pair {
+      display: flex;
+      gap: 1rem;
+      margin: 2rem 0;
+      align-items: flex-start;
+    }
+    .case-img-pair .case-img-break { margin: 0; }
+
+    /* Result: portrait or landscape — natural width at fixed height */
+    .pair-result { flex-shrink: 0; }
+    .pair-result img { height: 340px; width: auto; display: block; }
+
+    /* Journey: fills remaining space, shown fully (no crop) */
+    .pair-journey { flex: 1; min-width: 0; }
+    .pair-journey .case-img-break { background: #fff; } /* seamless with white map bg */
+    .pair-journey img { width: 100%; height: 340px; object-fit: contain; object-position: center; display: block; }
+
+
+    @media (max-width: 768px) {
+      .lightbox-btn { width: 38px; height: 38px; font-size: 1rem; }
+      .case-grid-3 { grid-template-columns: 1fr; }
+      .pair-result img { height: 200px; }
+      .pair-journey img { height: 200px; }
+      .research-stretch { display: block; }
+      .research-stretch img,
+      .research-stretch video { flex: none; height: auto; object-fit: fill; }
+    }
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .case-grid-3 { grid-template-columns: 1fr 1fr; }
+      .case-grid-3 .case-block-img { grid-column: 1 / -1; max-height: 260px; overflow: hidden; }
+      .case-grid-3 .case-block-img img { height: 260px; object-fit: cover; }
+    }
+
+    /* ─── RESOURCES ─────────────────────────────────────────── */
+    .resources { border-top: 1px solid var(--border-soft); }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .resource-card {
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: border-color .25s ease,
+                  transform .4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .resource-card:hover {
+      border-color: var(--green);
+      transform: translateY(-6px);
+    }
+
+    .resource-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(71, 233, 117, 0.1);
+      border: 1px solid rgba(71, 233, 117, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    .resource-title {
+      font-size: 1rem;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .resource-desc {
+      font-size: .88rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.68;
+      flex: 1;
+    }
+
+    .resource-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem;
+    }
+    .resource-tag {
+      padding: .2rem .7rem;
+      background: rgba(84, 22, 117, 0.06);
+      border-radius: 100px;
+      font-size: .7rem;
+      font-weight: 300;
+      color: var(--purple);
+    }
+
+    .resource-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .5rem 1.1rem .46rem;
+      background: transparent;
+      color: var(--green);
+      border: 1.5px solid var(--green);
+      border-radius: 100px;
+      font-family: 'Poppins', sans-serif;
+      font-size: .76rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      line-height: 1;
+      text-decoration: none;
+      align-self: flex-start;
+      transition: background .2s ease, color .2s ease;
+    }
+    .resource-btn:hover { background: var(--green); color: #fff; }
+
+    /* CV download button */
+    .cv-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      margin-top: 2rem;
+      padding: .55rem 1.3rem .52rem;
+      background: transparent;
+      color: var(--purple);
+      border: 1.5px solid var(--purple);
+      border-radius: 100px;
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 400;
+      letter-spacing: .04em;
+      text-decoration: none;
+      transition: background .2s ease, color .2s ease;
+    }
+    .cv-btn svg { flex-shrink: 0; }
+    .cv-btn:hover { background: var(--purple); color: #fff; }
+
+    @media (max-width: 768px) {
+      .resource-grid { grid-template-columns: 1fr; }
+    }
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .resource-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ─── PERSONAL PROJECTS ─────────────────────────────────── */
+    .beyond {
+      border-top: 1px solid var(--border-soft);
+      background:
+        linear-gradient(rgba(255,255,255,0.10), rgba(255,255,255,0.10)),
+        url('Bg.png') center / cover no-repeat;
+      color: var(--text);
+    }
+    .beyond .section-eyebrow { color: var(--purple); }
+    .beyond .section-eyebrow::before { background: var(--purple); }
+    .beyond .section-title { color: var(--text); margin-bottom: 2rem; }
+
+    .beyond-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    .beyond-text p {
+      font-size: 1rem;
+      font-weight: 300;
+      line-height: 1.82;
+      color: var(--text);
+      margin-bottom: 1.1rem;
+    }
+    .beyond-text .hl { font-weight: 900; color: var(--purple); }
+
+    .beyond-tags { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.5rem; }
+    .btag {
+      padding: .35rem .95rem;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: .78rem;
+      font-weight: 300;
+      color: var(--purple);
+      transition: background .2s ease;
+      cursor: default;
+    }
+    .btag:hover { background: rgba(255,255,255,.55); }
+
+    .beyond-img {
+      display: block;
+      width: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      text-decoration: none;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+      transition: transform .35s cubic-bezier(0.34,1.56,0.64,1), box-shadow .35s ease;
+    }
+    .beyond-img:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 56px rgba(0,0,0,0.26);
+    }
+    .beyond-img img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      padding: 3.5rem 4rem;
+      border-top: 1px solid var(--border-soft);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 2rem;
+    }
+    .footer-name {
+      font-family: 'Nimbus Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .footer-name span { color: var(--green); }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      justify-content: center;
+    }
+    .footer-links a {
+      text-decoration: none;
+      font-size: .82rem;
+      font-weight: 300;
+      letter-spacing: .08em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 2px;
+      transition: color .2s, border-color .2s;
+    }
+    .footer-links a:hover {
+      color: var(--purple);
+      border-bottom-color: var(--purple);
+    }
+    .footer-copy {
+      font-size: .72rem;
+      font-weight: 300;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    /* ─── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      section { padding: 6rem 2.5rem; }
+      nav { padding: 1.1rem 2.5rem; }
+      .hero { padding: 5rem 2.5rem 3rem; }
+      .about-grid { gap: 4rem; }
+      .beyond-grid { gap: 3.5rem; }
+    }
+
+    @media (max-width: 768px) {
+      section { padding: 5rem 1.5rem; }
+      nav { padding: 1rem 1.5rem; }
+      .hero { padding: 4.5rem 1.5rem 3rem; }
+
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      .hero-inner { grid-template-columns: 1fr; gap: 1rem; }
+      .cards-stack { height: 270px; }
+      .folder-icon-img { width: 108px; }
+      .folder-item:nth-child(1) { left: 0; }
+      .folder-item:nth-child(2) { left: 112px; bottom: 20px; }
+      .folder-item:nth-child(3) { left: 222px; bottom: -8px; }
+      .folder-imgs { width: 210px; bottom: 38px; }
+      .fcard img { width: 68px; }
+      .fcard-2 img { width: 86px; }
+      .folder-item:nth-child(1) .fcard-2 img { width: 72px; }  /* Royal London */
+      .folder-item:nth-child(2) .fcard-2 img { width: 108px; } /* Interbank */
+      .folder-item:nth-child(3) .fcard-2 img { width: 98px; }  /* NHS */
+      .fcard-3 img { width: 44px; }
+      .folder-item:hover .fcard-1 { transform: translateX(calc(-50% - 40px)) translateY(-110px) rotate(-14deg); }
+      .folder-item:hover .fcard-2 { transform: translateX(-50%) translateY(-122px) rotate(2deg); }
+      .folder-item:hover .fcard-3 { transform: translateX(calc(-50% + 36px)) translateY(-104px) rotate(13deg); }
+
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+
+      .case-header { padding: 1.5rem; gap: 1rem; }
+      .case-num { font-size: 1.8rem; }
+      .case-body-inner { padding: 1.5rem; }
+      .case-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .case-takeaways { margin-top: 0; }
+      .case-img-pair { margin: 1.5rem 0; }
+
+      .beyond-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+
+      footer {
+        grid-template-columns: 1fr;
+        padding: 2.5rem 1.5rem;
+        gap: 1.25rem;
+      }
+      .footer-links { justify-content: flex-start; }
+      .footer-copy { text-align: left; }
+    }
+
+    @media (max-width: 480px) {
+      .skills-grid { grid-template-columns: 1fr; }
+      .project-card { width: 170px; height: 220px; }
+      .cards-stack  { height: 260px; }
+    }
+
+    /* ─── Back to top button ─────────────────────────────────── */
+    .back-to-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--purple);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 4px 18px rgba(84,22,117,.35);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity .3s ease, transform .3s ease, background .2s ease;
+      pointer-events: none;
+      z-index: 800;
+    }
+    .back-to-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .back-to-top:hover { background: #6b1e96; }
+
+    /* ─── Proximity cursor near hero folders ─────────────────── */
+    #proximity-cursor {
+      position: fixed;
+      width: 120px;
+      height: 47px;
+      background: url('Cursor.png') center/contain no-repeat;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity .35s ease;
+    }
+    .folder-icon-img { cursor: none; }
+    body.proxy-active,
+    body.proxy-active * { cursor: none !important; }
+
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════ NAV ══════════════════════ -->
+<nav>
+  <a href="#home" class="nav-logo"><img src="Logo.png" alt="Jami Yalan" /></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#beyond">Personal projects</a></li>
+    <li class="nav-sep-li"><button class="nav-email-btn" id="copyEmailBtn" onclick="copyEmail()">Copy email</button></li>
+  </ul>
+  <button class="hamburger" id="menuBtn" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- mobile nav full-screen -->
+<nav class="nav-mobile" id="mobileNav">
+  <button class="nav-mobile-close" id="menuClose" aria-label="Close menu">✕</button>
+  <a href="#about"     onclick="closeNav()">About</a>
+  <a href="#work"      onclick="closeNav()">Work</a>
+  <a href="#beyond"    onclick="closeNav()">Personal projects</a>
+  <hr class="nav-mobile-sep" />
+  <button class="nav-email-btn" id="copyEmailBtnMobile" onclick="copyEmail('mobile')">Copy email</button>
+</nav>
+
+
+<!-- ══════════════════════════════ HERO ═════════════════════ -->
+<section class="hero" id="home">
+  <div class="hero-inner">
+
+    <div class="hero-text fade-up">
+      <h1>Jami<span class="name-line2">Yalan</span></h1>
+      <p class="hero-subtitle">Service Designer</p>
+      <p class="hero-tagline">
+        Untangling complex systems, grounded in real human experience.
+      </p>
+    </div>
+
+    <div class="cards-stack fade-up" style="transition-delay:.18s">
+
+      <!-- Royal London · purple folder -->
+      <div class="folder-item" onclick="openProject(0)">
+        <div class="folder-imgs">
+          <div class="fcard fcard-1"><img src="Declaration of health research.png" alt="Research" /></div>
+          <div class="fcard fcard-2"><img src="Declaration of Health Results.png"  alt="Result" /></div>
+          <div class="fcard fcard-3"><img src="User testing - Declaration of health.png" alt="UserTesting" /></div>
+        </div>
+        <img class="folder-icon-img" src="Folder Royal London.png" alt="Royal London" />
+        <div class="folder-label">
+          <div class="folder-name">Royal London</div>
+          <div class="folder-sub">Declaration of Health</div>
+        </div>
+      </div>
+
+      <!-- Interbank · green folder -->
+      <div class="folder-item" onclick="openProject(1)">
+        <div class="folder-imgs">
+          <div class="fcard fcard-1"><img src="Interbank Research.jpeg" alt="Research" /></div>
+          <div class="fcard fcard-2"><img src="Interbank Result.png"    alt="Result" /></div>
+          <div class="fcard fcard-3"><img src="Interbank - pencil.png"  alt="Tool" /></div>
+        </div>
+        <img class="folder-icon-img" src="Folder Interbank.png" alt="Interbank" />
+        <div class="folder-label">
+          <div class="folder-name">Interbank</div>
+          <div class="folder-sub">Agricultural Payrolls</div>
+        </div>
+      </div>
+
+      <!-- NHS Pioneer · blue folder -->
+      <div class="folder-item" onclick="openProject(2)">
+        <div class="folder-imgs">
+          <div class="fcard fcard-1"><img src="NHS Research.jpg" alt="Research" /></div>
+          <div class="fcard fcard-2"><img src="NHS Result.jpg"   alt="Result" /></div>
+          <div class="fcard fcard-3"><img src="Figma - NHS.png"  alt="Figma" /></div>
+        </div>
+        <img class="folder-icon-img" src="Folder NHS.png" alt="NHS Pioneer" />
+        <div class="folder-label">
+          <div class="folder-name">NHS Pioneer</div>
+          <div class="folder-sub">AfterCare+</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="scroll-cue fade-up" style="transition-delay:.35s">
+    <span class="scroll-bar"></span>
+    <span>Scroll to explore</span>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════ ABOUT ════════════════════ -->
+<section class="about" id="about">
+  <div class="section-eyebrow">About</div>
+  <div class="about-grid">
+
+    <!-- Left -->
+    <div>
+      <h2 class="section-title fade-up">
+        The designer<br><span style="font-weight:300">behind the work</span>
+      </h2>
+
+      <div class="about-intro fade-up" style="transition-delay:.1s">
+        <p>
+          I started in product design, working with physical materials and tangible objects. But
+          somewhere along the way I realised that the real leverage was not in designing a single
+          touchpoint but in understanding the whole system behind it, every process, every handoff,
+          every moment where something could go wrong for a real person. That shift is what pulled
+          me into service design, and into the belief that how institutions work, or fail to work,
+          shapes people's lives in ways that are rarely visible until something breaks.
+        </p>
+        <p>
+          That same conviction is what brought me to the UK and to UAL. Coming from Peru, where
+          institutions carry enormous weight in people's lives and often fail them, I wanted to work
+          where public service design is taken seriously as a practice. The goal has always been
+          to bring that back.
+        </p>
+        <p>
+          For me, good service design starts with getting everyone in the room. Co-designing with
+          users, stakeholders and process experts is not just good practice, it is how you build
+          the trust and shared understanding that makes change actually stick. And once you have
+          that, the most valuable thing I do is reframe. Helping organisations question their own
+          assumptions, uncover where the real problem is hiding, and plan a strategy around that.
+          That is where design earns its place.
+        </p>
+      </div>
+
+      <div class="passion-block fade-up" style="transition-delay:.2s">
+        <div class="block-label">Things I care about</div>
+        <div class="chips">
+          <span class="chip">Systems thinking</span>
+          <span class="chip">Design justice</span>
+          <span class="chip">Co-design</span>
+          <span class="chip">Healthcare</span>
+          <span class="chip">Financial inclusion</span>
+          <span class="chip">Anticipatory innovation</span>
+          <span class="chip">AI &amp; design</span>
+          <span class="chip">Research methods</span>
+          <span class="chip">Creative coding</span>
+          <span class="chip">Photography</span>
+          <span class="chip">Sci-fi</span>
+          <span class="chip">Embroidery</span>
+        </div>
+      </div>
+
+      <a href="CV JYM - SD.pdf" download class="cv-btn fade-up" style="transition-delay:.3s">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.5 10.5L3.5 6.5H6V1.5H9V6.5H11.5L7.5 10.5Z" fill="currentColor"/>
+          <path d="M2 13H13V11.5H2V13Z" fill="currentColor"/>
+        </svg>
+        Download CV
+      </a>
+    </div>
+
+    <!-- Right -->
+    <div>
+      <div class="exp-block fade-up">
+        <div class="block-label">Experience</div>
+
+        <div class="exp-item">
+          <div class="exp-year">2025 — 2026</div>
+          <div>
+            <div class="exp-role">Service Designer</div>
+            <div class="exp-company">Royal London</div>
+            <div class="exp-desc">Conducted qualitative research across both the Orphan Customers and Declaration of Health projects with customers, advisers and customer service representatives, 16 actionable insights, reframing the problem from adviser loss to a broader trust and communications challenge.</div>
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-year">2023 — 2024</div>
+          <div>
+            <div class="exp-role">MA Service Design</div>
+            <div class="exp-company">UAL London College of Communication</div>
+            <div class="exp-desc">Major project with NHS Pioneer Centre on lymphoedema aftercare. Live projects with CIPD and DEFRA using design futures and anticipatory innovation methods.</div>
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-year">2021 — 2023</div>
+          <div>
+            <div class="exp-role">Senior UX Designer</div>
+            <div class="exp-company">Globant Peru</div>
+            <div class="exp-desc">End-to-end service design across Autodesk, Hospital Albert Einstein and BCI Bank. Facilitated 20+ cross-cultural co-design workshops across four countries. Reduced dropout rates at Laureate Universities through co-designed onboarding interventions.</div>
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-year">2020 — 2021</div>
+          <div>
+            <div class="exp-role">Product &amp; Service Designer</div>
+            <div class="exp-company">Farmacias Peruanas</div>
+            <div class="exp-desc">Redesigned medicine delivery during COVID-19 for vulnerable and chronic patients. Recurrent prescription system improved patient satisfaction by 35%. Led a complete app suite redesign and design system creation for the group's omnichannel platform.</div>
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-year">2018 — 2020</div>
+          <div>
+            <div class="exp-role">UX Designer</div>
+            <div class="exp-company">Interbank</div>
+            <div class="exp-desc">Lead designer on Interbank's main banking app for two years. Co-designed Plin with BBVA and Scotiabank. Main designer at the discovery project Frilea, a service for unbanked freelancers, that launched as a live product soon after. Designed marketplace at the main app and financial products like quick loans saw approximately 40 to 50% adoption growth post-redesign.</div>
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-year">2011 — 2017</div>
+          <div>
+            <div class="exp-role">BA Industrial Design</div>
+            <div class="exp-company">Pontifical Catholic University of Peru</div>
+            <div class="exp-desc">4th year project selected for Global Grad Show at Dubai Design Week 2017. 5th year project awarded Critic's Award at PUCP Design Exhibition.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fade-up">
+        <div class="block-label">Skills</div>
+        <div class="skills-grid">
+          <div class="skill-box">
+            <h4>Research</h4>
+            <ul>
+              <li>Qualitative interviews</li>
+              <li>Stakeholder interviews</li>
+              <li>Service safaris</li>
+              <li>Contextual inquiry</li>
+              <li>Participatory design</li>
+              <li>Usability testing</li>
+              <li>Wizard of Oz</li>
+            </ul>
+          </div>
+          <div class="skill-box">
+            <h4>Service Design</h4>
+            <ul>
+              <li>Service blueprinting</li>
+              <li>Journey mapping</li>
+              <li>Co-design facilitation</li>
+              <li>Systemic mapping</li>
+              <li>Anticipatory innovation</li>
+              <li>Futures &amp; scenario planning</li>
+              <li>Service prototyping</li>
+              <li>Workshop design &amp; facilitation</li>
+            </ul>
+          </div>
+          <div class="skill-box">
+            <h4>Delivery</h4>
+            <ul>
+              <li>Sacrificial concepts</li>
+              <li>Iterative prototyping</li>
+              <li>Stakeholder management</li>
+              <li>Cross-functional facilitation</li>
+              <li>Change management</li>
+              <li>Scrum / Agile</li>
+            </ul>
+          </div>
+          <div class="skill-box">
+            <h4>Tools &amp; AI</h4>
+            <ul>
+              <li>Figma · Miro · Jira</li>
+              <li>Maze · UserTesting · Airtable</li>
+              <li>Adobe Suite · Theydo · Notion</li>
+              <li>AI-augmented workflows</li>
+              <li>HTML / CSS / JS</li>
+            </ul>
+          </div>
+          <div class="skill-box" style="grid-column: 1 / -1;">
+            <h4>Languages</h4>
+            <ul>
+              <li>English (advanced)</li>
+              <li>Spanish (native)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════ WORK ═════════════════════ -->
+<section class="work" id="work">
+  <div class="section-eyebrow">Work</div>
+  <h2 class="section-title fade-up">
+    Selected<br><span style="font-weight:300">case studies</span>
+  </h2>
+
+  <div class="case-list">
+
+    <!-- 01 Royal London -->
+    <div class="case-card fade-up">
+      <div class="case-header" onclick="toggleCase(this)">
+        <div class="case-num">01</div>
+        <div>
+          <div class="case-title">Declaration of Health</div>
+          <div class="case-org">Royal London</div>
+        </div>
+        <div class="case-toggle">+</div>
+      </div>
+      <div class="case-body">
+        <div class="case-body-inner">
+          <div class="case-grid">
+            <div class="case-block">
+              <div class="case-block-label">Context</div>
+              <p>Royal London is the UK's largest mutual life insurance company. Protection customers manage their policies through independent financial advisers, which means Royal London often has limited direct contact with end customers. This project sat within the protection servicing team and focused on the communications customers receive when their policy is at risk of lapsing.</p>
+            </div>
+            <div class="case-block">
+              <div class="case-block-label">Problem</div>
+              <p>When a customer misses payments and their policy lapses, Royal London sends a Declaration of Health form to reinstate it. The problem came to light through a complaint: a customer had just been diagnosed with cancer. In the stress of that, she missed an automatic payment, her policy lapsed, and when she tried to reinstate it she completed the declaration honestly. Because of her diagnosis, we could not take her on again. The process had worked exactly as designed. But it had failed her completely. The real issue was the communication journey leading up to it. By the time customers reached the form, it was already too late — they had arrived with no warning, no support and no real understanding of what was happening to them.</p>
+            </div>
+            <div class="case-block">
+              <div class="case-block-label">Design Process</div>
+              <ul>
+                <li><strong>Research and iteration:</strong> Ran 5 rounds of qualitative testing with 24 participants total through UserTesting, using the actual letters as artefacts to anchor conversations. Participants included customers who had experienced financial hardship, serious illness or bereavement, so we could understand how the communications landed in the moments they were most needed.</li>
+                <li><strong>Synthesis:</strong> Each round revealed where the tone was missing, where the information was unclear, and where customers felt abandoned rather than supported. Customers were reaching the Declaration of Health with no warning and no support. The problem started long before they ever saw the form.</li>
+                <li><strong>Stakeholder alignment:</strong> Facilitated feedback sessions with marketing, subject matter experts and vulnerable customer panels to pressure-test tone, clarity and accessibility across the full journey.</li>
+              </ul>
+            </div>
+            <div class="case-block-img research-stretch" onclick="openLightbox(0,0)">
+              <img src="Declaration of health research.png" alt="Research" />
+            </div>
+            <div class="case-block">
+              <div class="case-block-label">Outcomes</div>
+              <div class="outcome-chips">
+                <span class="outcome-chip">3-stage communication journey replacing single notice</span>
+                <span class="outcome-chip">24 vulnerable customers across 5 rounds of qualitative testing</span>
+                <span class="outcome-chip">Helping Hand resources integrated across all lapse communications</span>
+                <span class="outcome-chip">Clear payment update instructions added to reduce friction</span>
+                <span class="outcome-chip">Designs handed over to implementation team at project close</span>
+              </div>
+            </div>
+            <div class="case-block">
+              <div class="case-block-label">Solution</div>
+              <p>Redesigned the full communication journey for lapsing policies. Added a new reminder letter 20 days after the first notice, creating a 3-stage arc: warning at 35 days, reminder at 20 days, confirmation of cancellation. All three letters now include signposting to Helping Hand, Royal London's free wellbeing service, with resources for financial support, mental health and medical help. QR codes were added for easy mobile access. Instructions for updating payment methods were simplified and made prominent throughout.</p>
+            </div>
+          </div>
+          <div class="case-img-pair">
+            <div class="case-img-break pair-result" onclick="openLightbox(0,1)">
+              <img src="Declaration of Health Results.png" alt="Results" />
+            </div>
+            <div class="case-img-break pair-journey" onclick="openLightbox(0,2)">
+              <img src="Royal London - Journey.png" alt="Journey Map" />
+            </div>
+          </div>
+          <div class="case-block case-takeaways">
+            <div class="case-block-label">Takeaways</div>
+            <p>The most valuable thing I did on this project was to reframe the challenge from a form redesign problem to a communication project. We found quickly that the gap was in how we communicated before the form was ever needed. This reframe came directly from listening to customers, and it changed the entire direction of the work.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 Interbank -->
+    <div class="case-card fade-up" style="transition-delay:.1s">
+      <div class="case-header" onclick="toggleCase(this)">
+        <div class="case-num">02</div>
+        <div>
+          <div class="case-title">Agricultural Payrolls</div>
+          <div class="case-org">Interbank</div>
+        </div>
+        <div class="case-toggle">+</div>
+      </div>
+      <div class="case-body">
+        <div class="case-body-inner">
+          <div class="case-grid">
+            <div class="case-block">
+              <div class="case-block-label">Context</div>
+              <p>Every harvest season, an agricultural company in La Libertad, Peru brings in hundreds of seasonal workers. Each one needed a bank account to receive their paycheck. Interbank was the selected bank by their employers, but the process was broken: long queues under the sun, difficulty validating identities for workers with worn fingerprints or who could not read, and at the end of it all, workers throwing their debit cards away because they had no idea what to do with them after receiving their wage.</p>
+            </div>
+            <div class="case-block">
+              <div class="case-block-label">Problem</div>
+              <p>The client framing was a usability problem: how do we make the account opening process faster? But when we got to the field, it became clear the real problem was different. Most workers had no interest in a bank account. They wanted their money, in cash, that day. The debit card was an obstacle, not a solution.</p>
+            </div>
+            <div class="case-block">
+              <div class="case-block-label">Design Process</div>
+              <ul>
+                <li><strong>Research phase:</strong> Travelled to La Libertad for a 2-day field research sprint. Conducted interviews and shadowing with workers ranging from 21-year-old college students to 56-year-old illiterate seasonal labourers, observing the full payroll journey from queue to withdrawal.</li>
+                <li><strong>Synthesis:</strong> The key insight was that almost every worker had a mobile phone. And Interbank already had a cardless ATM withdrawal service. The question shifted from "how do we onboard them to banking?" to "what if there is no card at all?"</li>
+                <li><strong>Prototype and test:</strong> Built three prototypes later that first day: a tablet app, a USSD mobile service and a mock ATM cardless withdrawal flow. Tested all three with users on day two, including workers who had never used digital banking. After receiving overall positive feedback we returned to Lima to iterate and gather a work team to make this idea happen.</li>
+              </ul>
+            </div>
+            <div class="case-block-img research-stretch" onclick="openLightbox(1,0)">
+              <img src="Interbank Research.jpeg" alt="Research" />
+            </div>
+            <div class="case-block">
+              <div class="case-block-label">Outcomes</div>
+              <div class="outcome-chips">
+                <span class="outcome-chip">Reframed from digital onboarding to cardless payment service</span>
+                <span class="outcome-chip">3 prototypes built and tested with real users in under 48 hours</span>
+                <span class="outcome-chip">Solution designed for users ranging from digitally confident to illiterate</span>
+                <span class="outcome-chip">Proposed service blueprint adopted as basis for pilot in Trujillo</span>
+              </div>
+            </div>
+            <div class="case-block">
+              <div class="case-block-label">Solution</div>
+              <p>Proposed a service redesign centred on USSD protocols and Interbank's existing cardless withdrawal infrastructure. Workers could check their balance and generate a withdrawal code from any basic mobile phone, no smartphone required, no debit card, no queue. The solution also added transparent payroll notifications so workers knew exactly how much they had earned before payday, something that had never existed before.</p>
+            </div>
+          </div>
+          <div class="case-img-pair">
+            <div class="case-img-break pair-result" onclick="openLightbox(1,1)">
+              <img src="Interbank Result.png" alt="Result" />
+            </div>
+            <div class="case-img-break pair-journey" onclick="openLightbox(1,2)">
+              <img src="Interbank - Journey.png" alt="Journey Map" />
+            </div>
+          </div>
+          <div class="case-block case-takeaways">
+            <div class="case-block-label">Takeaways</div>
+            <p>This is the project where I understood what service design really meant for me. The moment we asked "what if there is no card?" everything changed. The answer was already in the system, we just needed to look at it from the worker's perspective first. Designing for people with low digital literacy also taught me that simplicity takes real effort. It means understanding what someone actually needs, in their actual context, and stripping everything else away.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 NHS Pioneer Centre -->
+    <div class="case-card fade-up" style="transition-delay:.2s">
+      <div class="case-header" onclick="toggleCase(this)">
+        <div class="case-num">03</div>
+        <div>
+          <div class="case-title">MA Project</div>
+          <div class="case-org">NHS Pioneer Centre</div>
+        </div>
+        <div class="case-toggle">+</div>
+      </div>
+      <div class="case-body">
+        <div class="case-body-inner">
+          <div class="case-grid">
+            <div class="case-block">
+              <div class="case-block-label">Context</div>
+              <p>NHS Pioneer Wound Healing and Lymphoedema Centres provide specialist aftercare to patients with chronic, complex conditions. Lymphoedema is a lifelong condition with no cure, managed through daily self-care routines, compression garments and regular clinic visits. Patients are often vulnerable, elderly or managing multiple conditions simultaneously. This was my MA major project at UAL.</p>
+            </div>
+            <div class="case-block">
+              <div class="case-block-label">Problem</div>
+              <p>Despite excellent clinical care and strong patient reviews, the service had a significant gap: once patients finished their treatment programme, there was no structured support to help them manage their condition independently and avoid relapse. The clinic also lacked a clear strategy for the future. There were ideas on the table, including exploring VR, but no defined direction or roadmap to evaluate them against. The challenge was both immediate and long-term: how do you support patients after they leave, and how do you build a coherent vision for where the service needs to go?</p>
+            </div>
+            <div class="case-block">
+              <div class="case-block-label">Design Process</div>
+              <ul>
+                <li><strong>Research phase:</strong> Conducted qualitative research with lymphoedema and wound care patients, nurses and NHS staff to map the current aftercare journey and understand where the system was failing patients between touchpoints.</li>
+                <li><strong>Synthesis:</strong> Used systems mapping to identify the feedback loops driving deterioration, and anticipatory innovation methods to explore what future scenarios for NHS capacity and patient self-management might look like in 5–10 years.</li>
+                <li><strong>Strategy development:</strong> Developed a strategic roadmap using design futures methodology, mapping signals of change to identify which near and mid-term actions would best position the service for preferred futures, rather than designing a single intervention.</li>
+                <li><strong>Co-design:</strong> Facilitated workshops with clinical staff and patients to validate the direction and stress-test proposals against the realities of NHS delivery.</li>
+              </ul>
+            </div>
+            <div class="case-block-img research-stretch case-video-block" onclick="openLightbox(2,0)">
+              <video src="AfterCare- video.mp4" autoplay muted loop playsinline controls></video>
+            </div>
+            <div class="case-block">
+              <div class="case-block-label">Outcomes</div>
+              <div class="outcome-chips">
+                <span class="outcome-chip">Full service blueprint mapping current and future state</span>
+                <span class="outcome-chip">Strategic roadmap using anticipatory innovation methods</span>
+                <span class="outcome-chip">Co-designed patient education materials</span>
+                <span class="outcome-chip">Presented to NHS Pioneer Centre clinical team</span>
+              </div>
+            </div>
+            <div class="case-block">
+              <div class="case-block-label">Solution</div>
+              <p>A strategic roadmap with phased interventions prioritising patient self-management capability, including a digital support tool for between-appointment guidance, clearer discharge and re-referral pathways, and a co-designed patient education resource developed with input from people living with the conditions.</p>
+            </div>
+          </div>
+          <div class="case-img-pair">
+            <div class="case-img-break pair-result" onclick="openLightbox(2,1)">
+              <img src="NHS Result.jpg" alt="Result" />
+            </div>
+            <div class="case-img-break pair-journey" onclick="openLightbox(2,2)">
+              <img src="NHS - Journey.png" alt="Journey Map" />
+            </div>
+          </div>
+          <div class="case-block case-takeaways">
+            <div class="case-block-label">Takeaways</div>
+            <p>Working with patients who are managing lifelong conditions taught me a lot about what it means to design for dignity as well as function. The anticipatory innovation approach was genuinely useful here because the NHS cannot afford to design only for today. You have to understand where things are going and design for that future, not the current state. I would take that lens to any complex public sector challenge.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════ BEYOND DESIGN ══════════════════ -->
+<section class="beyond" id="beyond">
+  <div class="section-eyebrow">Personal Projects</div>
+  <div class="beyond-grid">
+
+    <div class="beyond-text fade-up">
+      <h2 class="section-title">
+        I also build<br><span style="font-weight:300">the things I design</span>
+      </h2>
+      <p>
+        I enjoy using AI tools for creative coding and prototyping ideas quickly. One of the
+        projects I am most proud of is my wedding website. I wanted it to feel personal rather
+        than generic, and I did not want to rely on external services for livestreaming, gift
+        management or photo sharing. It also needed to be genuinely useful, almost all of my
+        guests are from Peru, so explaining transportation, weather, accommodation and logistics
+        in Scotland required more than a single page.
+      </p>
+      <p>
+        Built from scratch using <span class="hl">AI, HTML, CSS and JavaScript</span>, deployed
+        on GitHub Pages with a Google Sheets backend for form responses. No templates, no
+        shortcuts. Bilingual, responsive, with custom animations and live forms.
+      </p>
+      <div class="beyond-tags">
+        <span class="btag">HTML / CSS / JS</span>
+        <span class="btag">GitHub Pages</span>
+        <span class="btag">AI-assisted</span>
+        <span class="btag">Bilingual</span>
+        <span class="btag">Responsive</span>
+        <span class="btag">Custom animations</span>
+      </div>
+    </div>
+
+    <a class="beyond-img fade-up" href="https://jami-yalan.github.io/jami-franco-wedding/" target="_blank" rel="noopener" style="transition-delay:.18s" aria-label="Visit the wedding website">
+      <img src="wedding-preview.jpg" alt="Jami & Franco wedding website" />
+    </a>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════ FOOTER / CONTACT ═══════════════ -->
+<footer id="contact">
+  <div class="footer-name">Jami <span>Yalan</span></div>
+  <ul class="footer-links">
+    <li>
+      <a href="https://www.linkedin.com/in/jam-yln/" target="_blank" rel="noopener noreferrer">
+        ↗ LinkedIn
+      </a>
+    </li>
+    <li>
+      <a href="https://medium.com/@jam.yaln" target="_blank" rel="noopener noreferrer">
+        ↗ Medium
+      </a>
+    </li>
+    <li>
+      <a href="mailto:jam.yaln@gmail.com">
+        → Email
+      </a>
+    </li>
+  </ul>
+  <div class="footer-copy">© 2025 Jami Yalan</div>
+</footer>
+
+
+<!-- ════════════════════════════════ JS ═════════════════════ -->
+<button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+<!-- ══════════════════════════ LIGHTBOX ══════════════════════ -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-btn lightbox-prev" onclick="lbPrev()"><svg width="8" height="14" viewBox="0 0 11 19" fill="none"><polyline points="9,1 1,9.5 9,18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="lightbox-img-wrap" id="lbWrap">
+    <img id="lbImg" src="" alt="" />
+    <video id="lbVideo" controls></video>
+  </div>
+  <button class="lightbox-btn lightbox-next" onclick="lbNext()"><svg width="8" height="14" viewBox="0 0 11 19" fill="none"><polyline points="2,1 10,9.5 2,18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="lightbox-counter" id="lbCounter"></div>
+</div>
+
+<script>
+
+  /* ── Copy email CTA ─────────────────────────────────────── */
+  function copyEmail(variant) {
+    navigator.clipboard.writeText('jam.yaln@gmail.com').then(() => {
+      const ids = variant === 'mobile'
+        ? ['copyEmailBtnMobile']
+        : ['copyEmailBtn'];
+      ids.forEach(id => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        btn.innerHTML = 'Copied ✓';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.classList.add('fading');           // quick dip (0.18s)
+          setTimeout(() => {
+            btn.innerHTML = 'Copy email';
+            btn.classList.remove('copied', 'fading'); // swap + fade back in
+          }, 190);
+        }, 2200);
+      });
+    });
+  }
+
+  /* ── Mobile nav ─────────────────────────────────────────── */
+  const menuBtn   = document.getElementById('menuBtn');
+  const mobileNav = document.getElementById('mobileNav');
+  const menuClose = document.getElementById('menuClose');
+
+  menuBtn.addEventListener('click',   () => mobileNav.classList.add('open'));
+  menuClose.addEventListener('click', closeNav);
+
+  function closeNav() { mobileNav.classList.remove('open'); }
+
+  /* ── Open project from hero folder click ────────────────── */
+  function openProject(index) {
+    const cards = document.querySelectorAll('.case-card');
+    if (!cards[index]) return;
+    // Close all, open the target
+    document.querySelectorAll('.case-card.open').forEach(c => c.classList.remove('open'));
+    cards[index].classList.add('open');
+    // Scroll after a short delay so the accordion has time to open
+    setTimeout(() => {
+      cards[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  }
+
+  /* ── Lightbox ───────────────────────────────────────────── */
+  const projectImages = [
+    [
+      'Declaration of health research.png',
+      'Declaration of Health Results.png',
+      'Royal London - Journey.png'
+    ],
+    [
+      'Interbank Research.jpeg',
+      'Interbank Result.png',
+      'Interbank - Journey.png'
+    ],
+    [
+      'AfterCare- video.mp4',
+      'NHS Result.jpg',
+      'NHS - Journey.png'
+    ]
+  ];
+
+  let lbProject = 0, lbIndex = 0;
+  const lb        = document.getElementById('lightbox');
+  const lbWrap    = document.getElementById('lbWrap');
+  const lbImg     = document.getElementById('lbImg');
+  const lbVideo   = document.getElementById('lbVideo');
+  const lbCounter = document.getElementById('lbCounter');
+
+  function openLightbox(project, idx) {
+    lbProject = project;
+    lbIndex   = idx;
+    showLbItem();
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+    lbVideo.pause();
+    lbVideo.src = '';
+    lbWrap.classList.remove('is-video');
+  }
+
+  function showLbItem() {
+    const items  = projectImages[lbProject];
+    const src    = items[lbIndex];
+    const isVid  = /\.(mp4|webm|mov)$/i.test(src);
+    lbWrap.classList.toggle('is-video', isVid);
+    if (isVid) {
+      lbVideo.src = src;
+      lbVideo.play();
+      lbImg.src   = '';
+    } else {
+      lbImg.src   = src;
+      lbVideo.pause();
+      lbVideo.src = '';
+    }
+    lbCounter.textContent = (lbIndex + 1) + ' / ' + items.length;
+  }
+
+  function lbPrev() {
+    const len = projectImages[lbProject].length;
+    lbIndex   = (lbIndex - 1 + len) % len;
+    showLbItem();
+  }
+
+  function lbNext() {
+    const len = projectImages[lbProject].length;
+    lbIndex   = (lbIndex + 1) % len;
+    showLbItem();
+  }
+
+  lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape')      closeLightbox();
+    if (e.key === 'ArrowLeft')   lbPrev();
+    if (e.key === 'ArrowRight')  lbNext();
+  });
+
+  /* ── Case study accordion ───────────────────────────────── */
+  function toggleCase(header) {
+    const card   = header.closest('.case-card');
+    const isOpen = card.classList.contains('open');
+
+    // Close all first
+    document.querySelectorAll('.case-card.open').forEach(c => c.classList.remove('open'));
+
+    // Re-open if it wasn't already open
+    if (!isOpen) card.classList.add('open');
+  }
+
+  /* ── Intersection Observer → fade-up ────────────────────── */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+  /* ── Back to top ── */
+  const topBtn = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    topBtn.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+  topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  /* ── Proximity cursor near hero folders ── */
+  const proxyCursor = document.createElement('div');
+  proxyCursor.id = 'proximity-cursor';
+  document.body.appendChild(proxyCursor);
+
+  const folderIcons = document.querySelectorAll('.folder-icon-img');
+  let cursorVisible = false;
+
+  document.addEventListener('mousemove', (e) => {
+    proxyCursor.style.left = e.clientX + 'px';
+    proxyCursor.style.top  = e.clientY + 'px';
+
+    let minDist = Infinity;
+    folderIcons.forEach(icon => {
+      const r = icon.getBoundingClientRect();
+      const dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
+      const dy = Math.max(r.top  - e.clientY, 0, e.clientY - r.bottom);
+      minDist = Math.min(minDist, Math.sqrt(dx * dx + dy * dy));
+    });
+
+    const shouldShow = minDist <= 24;
+    if (shouldShow !== cursorVisible) {
+      cursorVisible = shouldShow;
+      proxyCursor.style.opacity = shouldShow ? '1' : '0';
+      document.body.classList.toggle('proxy-active', shouldShow);
+    }
+  }, { passive: true });
+
+</script>
+
+</body>
+</html>
