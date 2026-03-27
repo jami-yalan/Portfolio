@@ -2119,10 +2119,12 @@
     const defaultScale = '1';
     const featureScale = '1.26';
     let locked = null;
+    let swapTimer = null;
 
     function showPreview(src, scale) {
+      clearTimeout(swapTimer);
       previewImg.style.opacity = '0';
-      setTimeout(() => {
+      swapTimer = setTimeout(() => {
         previewImg.src = src;
         previewImg.style.transform = 'scale(' + (scale || defaultScale) + ')';
         previewImg.style.opacity = '1';
