@@ -1065,7 +1065,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 6rem;
-      align-items: center;
+      align-items: start;
     }
 
     .beyond-text p {
@@ -1104,10 +1104,15 @@
       background: rgba(255,255,255,0.3);
       position: relative;
       overflow: visible;
-      cursor: default;
-      transition: background 0.2s, transform 0.18s;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.18s, border-color 0.2s;
     }
     .bfeature:hover { background: rgba(255,255,255,0.6); transform: translateY(-2px); }
+    .bfeature-active {
+      background: rgba(255,255,255,0.7) !important;
+      border-color: var(--purple) !important;
+      transform: translateY(-2px);
+    }
     .bfeature-icon { font-size: 1.35rem; line-height: 1; }
     .bfeature-text {
       font-size: 0.78rem;
@@ -1131,16 +1136,26 @@
     .btag:hover { background: rgba(255,255,255,.55); }
 
     .beyond-img {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 100%;
+      min-height: 420px;
       border-radius: 14px;
-      overflow: hidden;
+      overflow: visible;
       text-decoration: none;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
-      transition: transform .35s cubic-bezier(0.34,1.56,0.64,1), box-shadow .35s ease;
+      transition: transform .35s cubic-bezier(0.34,1.56,0.64,1);
     }
-    .beyond-img:hover { transform: translateY(-4px); box-shadow: 0 18px 56px rgba(0,0,0,0.26); }
-    .beyond-img img { width: 100%; height: auto; display: block; }
+    .beyond-img:hover { transform: translateY(-4px); }
+    .beyond-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 14px;
+      transform: scale(1);
+      transition: opacity 0.22s ease;
+    }
 
     /* ─── FOOTER ─────────────────────────────────────────────── */
     footer {
@@ -1195,7 +1210,11 @@
       nav { padding: 1.1rem 2.5rem; }
       .hero { padding: 5rem 2.5rem 3rem; }
       .about-grid { gap: 4rem; }
-      .beyond-grid { gap: 3.5rem; }
+      .beyond-grid { gap: 3rem; }
+    }
+
+    @media (max-width: 900px) {
+      .beyond-grid { grid-template-columns: 1fr; gap: 2.5rem; }
     }
 
     @media (max-width: 768px) {
@@ -1235,8 +1254,6 @@
       .pair-result { flex-shrink: unset; }
       .pair-result img { height: 260px; width: 100%; object-fit: contain; object-position: center; }
       .pair-journey img { height: 260px; width: 100%; object-fit: cover; object-position: center top; }
-
-      .beyond-grid { grid-template-columns: 1fr; gap: 2.5rem; }
 
       footer {
         grid-template-columns: 1fr;
@@ -1804,12 +1821,12 @@
       </p>
       <p class="beyond-features-label">What guests could do</p>
       <div class="beyond-features">
-        <div class="bfeature"><span class="bfeature-icon">🎥</span><span class="bfeature-text">Watch the ceremony from anywhere</span></div>
-        <div class="bfeature"><span class="bfeature-icon">🗺️</span><span class="bfeature-text">Plan the trip to Scotland</span></div>
-        <div class="bfeature"><span class="bfeature-icon">✉️</span><span class="bfeature-text">RSVP directly on the site</span></div>
-        <div class="bfeature"><span class="bfeature-icon">🎁</span><span class="bfeature-text">Browse a curated gift list</span></div>
-        <div class="bfeature"><span class="bfeature-icon">📸</span><span class="bfeature-text">Upload and share photos</span></div>
-        <div class="bfeature"><span class="bfeature-icon">🌐</span><span class="bfeature-text">Everything in Spanish or English</span></div>
+        <div class="bfeature" data-preview="Beyond/🎥 Watch the ceremony from anywhere in the world.png"><span class="bfeature-icon">🎥</span><span class="bfeature-text">Watch the ceremony from anywhere</span></div>
+        <div class="bfeature" data-preview="Beyond/🗺️ Plan the trip to Scotland — transport, weather, where to stay.png"><span class="bfeature-icon">🗺️</span><span class="bfeature-text">Plan the trip to Scotland</span></div>
+        <div class="bfeature" data-preview="Beyond/✉️ RSVP directly on the site, no third-party service needed.png"><span class="bfeature-icon">✉️</span><span class="bfeature-text">RSVP directly on the site</span></div>
+        <div class="bfeature" data-preview="Beyond/🎁 Browse a gift list without a separate registry.png"><span class="bfeature-icon">🎁</span><span class="bfeature-text">Browse a curated gift list</span></div>
+        <div class="bfeature" data-preview="Beyond/📸 Upload and share photos from the day.png"><span class="bfeature-icon">📸</span><span class="bfeature-text">Upload and share photos</span></div>
+        <div class="bfeature" data-preview="Beyond/🌐 Read everything in Spanish or English.png" data-scale="1"><span class="bfeature-icon">🌐</span><span class="bfeature-text">Everything in Spanish or English</span></div>
       </div>
       <div class="beyond-tags">
         <span class="btag">HTML / CSS / JS</span>
@@ -2091,6 +2108,61 @@
       document.body.classList.toggle('proxy-active', shouldShow);
     }
   }, { passive: true });
+
+  /* ── Beyond feature card preview swapper ── */
+  (function() {
+    const cards = document.querySelectorAll('.bfeature[data-preview]');
+    const previewImg = document.querySelector('.beyond-img img');
+    if (!cards.length || !previewImg) return;
+
+    const defaultSrc = previewImg.getAttribute('src');
+    const defaultScale = '1';
+    const featureScale = '1.26';
+    let locked = null;
+
+    function showPreview(src, scale) {
+      previewImg.style.opacity = '0';
+      setTimeout(() => {
+        previewImg.src = src;
+        previewImg.style.transform = 'scale(' + (scale || defaultScale) + ')';
+        previewImg.style.opacity = '1';
+      }, 110);
+    }
+
+    const hasHover = window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 901px)').matches;
+
+    cards.forEach(card => {
+      if (hasHover) {
+        card.addEventListener('mouseenter', () => {
+          if (!locked) showPreview(card.dataset.preview, card.dataset.scale || featureScale);
+        });
+        card.addEventListener('mouseleave', () => {
+          if (!locked) showPreview(defaultSrc, defaultScale);
+        });
+      }
+      card.addEventListener('click', e => {
+        e.stopPropagation();
+        if (locked === card) {
+          locked = null;
+          cards.forEach(c => c.classList.remove('bfeature-active'));
+          showPreview(defaultSrc, defaultScale);
+        } else {
+          locked = card;
+          cards.forEach(c => c.classList.remove('bfeature-active'));
+          card.classList.add('bfeature-active');
+          showPreview(card.dataset.preview, card.dataset.scale || featureScale);
+        }
+      });
+    });
+
+    document.addEventListener('click', () => {
+      if (locked) {
+        locked = null;
+        cards.forEach(c => c.classList.remove('bfeature-active'));
+        showPreview(defaultSrc, defaultScale);
+      }
+    });
+  })();
 
 </script>
 
