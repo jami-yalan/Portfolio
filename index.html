@@ -73,7 +73,7 @@
       --border-soft: rgba(0, 0, 0, 0.07);
     }
 
-    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
 
     body {
       background: var(--bg);
@@ -751,13 +751,34 @@
       cursor: zoom-in;
     }
     .lightbox-img-wrap.zoomed {
-      cursor: zoom-out;
+      cursor: grab;
       overflow: auto;
       max-width: 95vw;
       max-height: 92vh;
       align-items: flex-start;
       justify-content: flex-start;
     }
+    .lightbox-img-wrap.panning { cursor: grabbing !important; }
+    .lb-zoom-out-btn {
+      display: none;
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: rgba(255,255,255,0.9);
+      border: 1.5px solid var(--purple);
+      color: var(--purple);
+      padding: .4rem .95rem;
+      border-radius: 100px;
+      font-size: .78rem;
+      font-weight: 400;
+      cursor: pointer;
+      z-index: 9001;
+      align-items: center;
+      gap: .35rem;
+      transition: background .2s;
+    }
+    .lb-zoom-out-btn:hover { background: rgba(84,22,117,.08); }
+    .lb-zoom-out-btn.visible { display: flex; }
     .lightbox-img-wrap.zoomed img {
       max-width: none;
       max-height: none;
@@ -1898,6 +1919,7 @@
   </div>
   <button class="lightbox-btn lightbox-next" onclick="lbNext()"><svg width="8" height="14" viewBox="0 0 11 19" fill="none"><polyline points="2,1 10,9.5 2,18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <div class="lightbox-counter" id="lbCounter"></div>
+  <button class="lb-zoom-out-btn" id="lbZoomOutBtn">↙ Zoom out</button>
 </div>
 
 <script>
@@ -1995,11 +2017,11 @@
     lbVideo.pause();
     lbVideo.src = '';
     lbWrap.classList.remove('is-video');
-    lbWrap.classList.remove('zoomed');
+    setZoomed(false);
   }
 
   function showLbItem() {
-    lbWrap.classList.remove('zoomed');
+    setZoomed(false);
     const items  = projectImages[lbProject];
     const src    = items[lbIndex];
     const isVid  = /\.(mp4|webm|mov)$/i.test(src);
@@ -2029,8 +2051,39 @@
   }
 
   lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+
+  const lbZoomOutBtn = document.getElementById('lbZoomOutBtn');
+  function setZoomed(on) {
+    lbWrap.classList.toggle('zoomed', on);
+    lbZoomOutBtn.classList.toggle('visible', on);
+  }
+  lbZoomOutBtn.addEventListener('click', () => setZoomed(false));
+
+  // Pan on drag when zoomed
+  let isPanning = false, panMoved = false, panStartX, panStartY, panScrollL, panScrollT;
+  lbWrap.addEventListener('mousedown', e => {
+    panMoved = false;
+    if (!lbWrap.classList.contains('zoomed') || lbWrap.classList.contains('is-video')) return;
+    isPanning = true;
+    panStartX = e.clientX; panStartY = e.clientY;
+    panScrollL = lbWrap.scrollLeft; panScrollT = lbWrap.scrollTop;
+    lbWrap.classList.add('panning');
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', e => {
+    if (!isPanning) return;
+    if (Math.abs(e.clientX - panStartX) > 3 || Math.abs(e.clientY - panStartY) > 3) panMoved = true;
+    lbWrap.scrollLeft = panScrollL - (e.clientX - panStartX);
+    lbWrap.scrollTop  = panScrollT - (e.clientY - panStartY);
+  });
+  document.addEventListener('mouseup', () => {
+    if (!isPanning) return;
+    isPanning = false;
+    lbWrap.classList.remove('panning');
+  });
   lbWrap.addEventListener('click', () => {
-    if (!lbWrap.classList.contains('is-video')) lbWrap.classList.toggle('zoomed');
+    if (lbWrap.classList.contains('is-video') || panMoved) return;
+    setZoomed(!lbWrap.classList.contains('zoomed'));
   });
 
   document.addEventListener('keydown', e => {
