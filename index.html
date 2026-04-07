@@ -73,7 +73,7 @@
       --border-soft: rgba(0, 0, 0, 0.07);
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 
     body {
       background: var(--bg);
@@ -748,6 +748,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: zoom-in;
+    }
+    .lightbox-img-wrap.zoomed {
+      cursor: zoom-out;
+      overflow: auto;
+      max-width: 95vw;
+      max-height: 92vh;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+    .lightbox-img-wrap.zoomed img {
+      max-width: none;
+      max-height: none;
+      width: auto;
+      height: auto;
     }
     .lightbox-img-wrap img,
     .lightbox-img-wrap video {
@@ -1980,9 +1995,11 @@
     lbVideo.pause();
     lbVideo.src = '';
     lbWrap.classList.remove('is-video');
+    lbWrap.classList.remove('zoomed');
   }
 
   function showLbItem() {
+    lbWrap.classList.remove('zoomed');
     const items  = projectImages[lbProject];
     const src    = items[lbIndex];
     const isVid  = /\.(mp4|webm|mov)$/i.test(src);
@@ -2012,6 +2029,9 @@
   }
 
   lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+  lbWrap.addEventListener('click', () => {
+    if (!lbWrap.classList.contains('is-video')) lbWrap.classList.toggle('zoomed');
+  });
 
   document.addEventListener('keydown', e => {
     if (!lb.classList.contains('open')) return;
