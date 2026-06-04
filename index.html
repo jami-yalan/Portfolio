@@ -1,9 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-961H1NQEWK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-961H1NQEWK');
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jami Yalan — Service Designer</title>
+  <meta name="description" content="Service designer with a background in research, systems thinking and design futures. Based in Edinburgh." />
+  <!-- Open Graph / WhatsApp / LinkedIn -->
+  <meta property="og:title" content="Jami Yalan — Service Designer" />
+  <meta property="og:description" content="Service designer with a background in research, systems thinking and design futures. Based in Edinburgh." />
+  <meta property="og:image" content="https://jami-yalan.github.io/Portfolio/Social.png" />
+  <meta property="og:url" content="https://jamy.design" />
+  <meta property="og:type" content="website" />
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Jami Yalan — Service Designer" />
+  <meta name="twitter:description" content="Service designer with a background in research, systems thinking and design futures. Based in Edinburgh." />
+  <meta name="twitter:image" content="https://jami-yalan.github.io/Portfolio/Social.png" />
   <link rel="icon" href="favicon.png" type="image/png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -53,7 +73,7 @@
       --border-soft: rgba(0, 0, 0, 0.07);
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
 
     body {
       background: var(--bg);
@@ -624,7 +644,7 @@
       overflow: hidden;
       transition: max-height .55s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .case-card.open .case-body { max-height: 2600px; }
+    .case-card.open .case-body { max-height: 6000px; }
 
     .case-body-inner {
       padding: 2rem 2.5rem 2.5rem;
@@ -728,6 +748,42 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: zoom-in;
+    }
+    .lightbox-img-wrap.zoomed {
+      cursor: grab;
+      overflow: auto;
+      max-width: 95vw;
+      max-height: 92vh;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+    .lightbox-img-wrap.panning { cursor: grabbing !important; }
+    .lb-zoom-out-btn {
+      display: none;
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: rgba(255,255,255,0.9);
+      border: 1.5px solid var(--purple);
+      color: var(--purple);
+      padding: .4rem .95rem;
+      border-radius: 100px;
+      font-size: .78rem;
+      font-weight: 400;
+      cursor: pointer;
+      z-index: 9001;
+      align-items: center;
+      gap: .35rem;
+      transition: background .2s;
+    }
+    .lb-zoom-out-btn:hover { background: rgba(84,22,117,.08); }
+    .lb-zoom-out-btn.visible { display: flex; }
+    .lightbox-img-wrap.zoomed img {
+      max-width: none;
+      max-height: none;
+      width: auto;
+      height: auto;
     }
     .lightbox-img-wrap img,
     .lightbox-img-wrap video {
@@ -845,6 +901,10 @@
       object-position: center top;
       display: block;
     }
+    /* Royal London + Interbank research: anchor left, overflow right */
+    .case-card:nth-child(1) .research-stretch img,
+    .case-card:nth-child(2) .research-stretch img { object-position: left top; }
+
     .case-video-block { cursor: zoom-in; }
 
     /* Takeaways lives below the main grid, full-width */
@@ -872,13 +932,40 @@
     @media (max-width: 768px) {
       .lightbox-btn { width: 38px; height: 38px; font-size: 1rem; }
       .case-grid-3 { grid-template-columns: 1fr; }
-      .pair-result img { height: 200px; }
-      .pair-journey img { height: 200px; }
+      /* heights overridden by .case-img-pair flex-direction:column rules below */
       .research-stretch { display: block; }
       .research-stretch img,
       .research-stretch video { flex: none; height: auto; object-fit: fill; }
     }
     @media (min-width: 769px) and (max-width: 1024px) {
+      /* Hero — reduce min-height so there's no giant gap below content */
+      .hero { min-height: auto; padding: 6rem 2.5rem 4rem; }
+
+      /* Folder animation — scale down so it fits the narrower right column */
+      .folder-icon-img { width: 130px; }
+      .cards-stack { height: 380px; }
+      .folder-item:nth-child(2) { left: 120px; }
+      .folder-item:nth-child(3) { left: 235px; }
+      .fcard img { width: 78px; }
+      .fcard-2 img { width: 110px; }
+      .folder-item:nth-child(1) .fcard-2 img { width: 92px; }
+      .folder-item:nth-child(2) .fcard-2 img { width: 134px; }
+      .folder-item:nth-child(3) .fcard-2 img { width: 120px; }
+      .fcard-3 img { width: 55px; }
+      .folder-imgs { width: 250px; }
+
+      /* Case grid — collapse to 1 col so research image drops below text */
+      .case-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .research-stretch { align-self: auto; }
+      .research-stretch img,
+      .research-stretch video { flex: none; height: auto; min-height: 240px; object-fit: cover; }
+
+      /* Result + Journey — stack vertically on tablet */
+      .case-img-pair { flex-direction: column; }
+      .pair-result { flex-shrink: unset; }
+      .pair-result img { height: 300px; width: 100%; object-fit: contain; object-position: center; }
+      .pair-journey img { height: 300px; width: 100%; object-fit: cover; object-position: center top; }
+
       .case-grid-3 { grid-template-columns: 1fr 1fr; }
       .case-grid-3 .case-block-img { grid-column: 1 / -1; max-height: 260px; overflow: hidden; }
       .case-grid-3 .case-block-img img { height: 260px; object-fit: cover; }
@@ -1014,7 +1101,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 6rem;
-      align-items: center;
+      align-items: start;
     }
 
     .beyond-text p {
@@ -1025,6 +1112,51 @@
       margin-bottom: 1.1rem;
     }
     .beyond-text .hl { font-weight: 900; color: var(--purple); }
+
+    .beyond-text .beyond-features-label {
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin: 1.8rem 0 0.6rem;
+    }
+    .beyond-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.55rem;
+      margin: 0;
+      overflow: visible;
+    }
+    .bfeature {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem 0.6rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.45rem;
+      text-align: center;
+      background: rgba(255,255,255,0.3);
+      position: relative;
+      overflow: visible;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.18s, border-color 0.2s;
+    }
+    .bfeature:hover { background: rgba(255,255,255,0.6); transform: translateY(-2px); }
+    .bfeature-active {
+      background: rgba(255,255,255,0.7) !important;
+      border-color: var(--purple) !important;
+      transform: translateY(-2px);
+    }
+    .bfeature-icon { font-size: 1.35rem; line-height: 1; }
+    .bfeature-text {
+      font-size: 0.78rem;
+      font-weight: 300;
+      line-height: 1.35;
+      color: var(--text);
+    }
+
 
     .beyond-tags { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.5rem; }
     .btag {
@@ -1040,22 +1172,25 @@
     .btag:hover { background: rgba(255,255,255,.55); }
 
     .beyond-img {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 100%;
+      min-height: 420px;
       border-radius: 14px;
-      overflow: hidden;
+      overflow: visible;
       text-decoration: none;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
-      transition: transform .35s cubic-bezier(0.34,1.56,0.64,1), box-shadow .35s ease;
+      transition: transform .35s cubic-bezier(0.34,1.56,0.64,1);
     }
-    .beyond-img:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 18px 56px rgba(0,0,0,0.26);
-    }
+    .beyond-img:hover { transform: translateY(-4px); }
     .beyond-img img {
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: cover;
       display: block;
+      border-radius: 14px;
+      transform: scale(1);
+      transition: opacity 0.22s ease;
     }
 
     /* ─── FOOTER ─────────────────────────────────────────────── */
@@ -1098,6 +1233,11 @@
       color: var(--purple);
       border-bottom-color: var(--purple);
     }
+    .footer-links button { text-decoration: none; font-size: .82rem; font-weight: 300; letter-spacing: .08em; color: var(--text); display: flex; align-items: center; gap: .4rem; border: none; background: none; cursor: pointer; border-bottom: 1px solid transparent; padding-bottom: 2px; transition: color .2s, border-color .2s; font-family: inherit; }
+    .footer-links button:hover { color: var(--purple); border-bottom-color: var(--purple); }
+    .footer-center { display: flex; flex-direction: column; align-items: center; }
+    .footer-toast { font-family: 'Poppins', sans-serif; font-size: .75rem; font-weight: 500; letter-spacing: .04em; color: var(--purple); pointer-events: none; opacity: 0; transform: translateY(-0.3rem); transition: opacity .22s ease, transform .22s ease; height: 1.2rem; display: flex; align-items: center; justify-content: center; margin-top: calc(.45rem + 16px); }
+    .footer-toast.show { opacity: 1; transform: translateY(0); }
     .footer-copy {
       font-size: .72rem;
       font-weight: 300;
@@ -1111,7 +1251,11 @@
       nav { padding: 1.1rem 2.5rem; }
       .hero { padding: 5rem 2.5rem 3rem; }
       .about-grid { gap: 4rem; }
-      .beyond-grid { gap: 3.5rem; }
+      .beyond-grid { gap: 3rem; }
+    }
+
+    @media (max-width: 900px) {
+      .beyond-grid { grid-template-columns: 1fr; gap: 2.5rem; }
     }
 
     @media (max-width: 768px) {
@@ -1144,12 +1288,13 @@
 
       .case-header { padding: 1.5rem; gap: 1rem; }
       .case-num { font-size: 1.8rem; }
-      .case-body-inner { padding: 1.5rem; }
+      .case-body-inner { padding: 1.5rem 1.5rem 3rem; }
       .case-grid { grid-template-columns: 1fr; gap: 2rem; }
       .case-takeaways { margin-top: 0; }
-      .case-img-pair { margin: 1.5rem 0; }
-
-      .beyond-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .case-img-pair { margin: 1.5rem 0; flex-direction: column; }
+      .pair-result { flex-shrink: unset; }
+      .pair-result img { height: 260px; width: 100%; object-fit: contain; object-position: center; }
+      .pair-journey img { height: 260px; width: 100%; object-fit: cover; object-position: center top; }
 
       footer {
         grid-template-columns: 1fr;
@@ -1321,8 +1466,8 @@
       <div class="about-intro fade-up" style="transition-delay:.1s">
         <p>
           I started in product design, working with physical materials and tangible objects. But
-          somewhere along the way I realised that the real leverage was not in designing a single
-          touchpoint but in understanding the whole system behind it, every process, every handoff,
+          somewhere along the way I realised that the real leverage was in understanding the whole
+          system behind a single touchpoint, every process, every handoff,
           every moment where something could go wrong for a real person. That shift is what pulled
           me into service design, and into the belief that how institutions work, or fail to work,
           shapes people's lives in ways that are rarely visible until something breaks.
@@ -1330,8 +1475,7 @@
         <p>
           That same conviction is what brought me to the UK and to UAL. Coming from Peru, where
           institutions carry enormous weight in people's lives and often fail them, I wanted to work
-          where public service design is taken seriously as a practice. The goal has always been
-          to bring that back.
+          where public service design is taken seriously as a practice.
         </p>
         <p>
           For me, good service design starts with getting everyone in the room. Co-designing with
@@ -1339,7 +1483,6 @@
           the trust and shared understanding that makes change actually stick. And once you have
           that, the most valuable thing I do is reframe. Helping organisations question their own
           assumptions, uncover where the real problem is hiding, and plan a strategy around that.
-          That is where design earns its place.
         </p>
       </div>
 
@@ -1416,7 +1559,7 @@
           <div>
             <div class="exp-role">UX Designer</div>
             <div class="exp-company">Interbank</div>
-            <div class="exp-desc">Lead designer on Interbank's main banking app for two years. Co-designed Plin with BBVA and Scotiabank. Main designer at the discovery project Frilea, a service for unbanked freelancers, that launched as a live product soon after. Designed marketplace at the main app and financial products like quick loans saw approximately 40 to 50% adoption growth post-redesign.</div>
+            <div class="exp-desc">Lead designer on Interbank's main banking app for two years. Co-designed Plin with BBVA and Scotiabank. Main designer at the discovery project Frilea, a service for unbanked freelancers that launched as a live product. Designed marketplace at the main app and financial products like quick loans saw approximately 40 to 50% adoption growth post-redesign.</div>
           </div>
         </div>
 
@@ -1522,13 +1665,13 @@
             </div>
             <div class="case-block">
               <div class="case-block-label">Problem</div>
-              <p>When a customer misses payments and their policy lapses, Royal London sends a Declaration of Health form to reinstate it. The problem came to light through a complaint: a customer had just been diagnosed with cancer. In the stress of that, she missed an automatic payment, her policy lapsed, and when she tried to reinstate it she completed the declaration honestly. Because of her diagnosis, we could not take her on again. The process had worked exactly as designed. But it had failed her completely. The real issue was the communication journey leading up to it. By the time customers reached the form, it was already too late — they had arrived with no warning, no support and no real understanding of what was happening to them.</p>
+              <p>When a customer misses payments and their policy lapses, Royal London sends a Declaration of Health form to reinstate it. The problem came to light through a complaint: a customer had just been diagnosed with cancer. In the stress of that, she missed an automatic payment, her policy lapsed, and when she tried to reinstate it she completed the declaration honestly. Because of her diagnosis, we could not take her on again. The process had worked exactly as designed. But it had failed her completely. The real issue lived earlier in the journey, in how we communicated before customers ever reached that form.</p>
             </div>
             <div class="case-block">
               <div class="case-block-label">Design Process</div>
               <ul>
                 <li><strong>Research and iteration:</strong> Ran 5 rounds of qualitative testing with 24 participants total through UserTesting, using the actual letters as artefacts to anchor conversations. Participants included customers who had experienced financial hardship, serious illness or bereavement, so we could understand how the communications landed in the moments they were most needed.</li>
-                <li><strong>Synthesis:</strong> Each round revealed where the tone was missing, where the information was unclear, and where customers felt abandoned rather than supported. Customers were reaching the Declaration of Health with no warning and no support. The problem started long before they ever saw the form.</li>
+                <li><strong>Synthesis:</strong> Each round revealed where the tone was missing, where the information was unclear, and where customers felt abandoned rather than supported. The key reframe was that the problem was not the Declaration of Health form itself but how little support existed before customers ever got there.</li>
                 <li><strong>Stakeholder alignment:</strong> Facilitated feedback sessions with marketing, subject matter experts and vulnerable customer panels to pressure-test tone, clarity and accessibility across the full journey.</li>
               </ul>
             </div>
@@ -1538,10 +1681,10 @@
             <div class="case-block">
               <div class="case-block-label">Outcomes</div>
               <div class="outcome-chips">
-                <span class="outcome-chip">3-stage communication journey replacing single notice</span>
-                <span class="outcome-chip">24 vulnerable customers across 5 rounds of qualitative testing</span>
+                <span class="outcome-chip">3-stage communication journey designed to replace single notice</span>
+                <span class="outcome-chip">24 vulnerable customers involved in iterative qualitative testing across 5 rounds</span>
                 <span class="outcome-chip">Helping Hand resources integrated across all lapse communications</span>
-                <span class="outcome-chip">Clear payment update instructions added to reduce friction</span>
+                <span class="outcome-chip">Clear payment update instructions added to reduce friction for customers in distress</span>
                 <span class="outcome-chip">Designs handed over to implementation team at project close</span>
               </div>
             </div>
@@ -1622,7 +1765,7 @@
           </div>
           <div class="case-block case-takeaways">
             <div class="case-block-label">Takeaways</div>
-            <p>This is the project where I understood what service design really meant for me. The moment we asked "what if there is no card?" everything changed. The answer was already in the system, we just needed to look at it from the worker's perspective first. Designing for people with low digital literacy also taught me that simplicity takes real effort. It means understanding what someone actually needs, in their actual context, and stripping everything else away.</p>
+            <p>This is the project where I understood what service design really meant for me. The moment we asked "what if there is no card?" everything changed. The answer was already in the system, we just needed to look at it from the worker's perspective first. Designing for people with low digital literacy also taught me that simplicity means doing the hard work of understanding what someone actually needs in their actual context, not reducing complexity arbitrarily.</p>
           </div>
         </div>
       </div>
@@ -1633,7 +1776,7 @@
       <div class="case-header" onclick="toggleCase(this)">
         <div class="case-num">03</div>
         <div>
-          <div class="case-title">MA Project</div>
+          <div class="case-title">AfterCare+</div>
           <div class="case-org">NHS Pioneer Centre</div>
         </div>
         <div class="case-toggle">+</div>
@@ -1685,7 +1828,7 @@
           </div>
           <div class="case-block case-takeaways">
             <div class="case-block-label">Takeaways</div>
-            <p>Working with patients who are managing lifelong conditions taught me a lot about what it means to design for dignity as well as function. The anticipatory innovation approach was genuinely useful here because the NHS cannot afford to design only for today. You have to understand where things are going and design for that future, not the current state. I would take that lens to any complex public sector challenge.</p>
+            <p>Working with patients who are managing lifelong conditions taught me a lot about what it means to design for dignity as well as function. The anticipatory innovation approach was genuinely useful here because the NHS cannot afford to design only for today. You have to understand where things are going and design for that future, not only the current state.</p>
           </div>
         </div>
       </div>
@@ -1708,8 +1851,8 @@
         I enjoy using AI tools for creative coding and prototyping ideas quickly. One of the
         projects I am most proud of is my wedding website. I wanted it to feel personal rather
         than generic, and I did not want to rely on external services for livestreaming, gift
-        management or photo sharing. It also needed to be genuinely useful, almost all of my
-        guests are from Peru, so explaining transportation, weather, accommodation and logistics
+        management or photo sharing. It also needed to be genuinely useful since almost all of
+        my guests are from Peru. So explaining transportation, weather, accommodation and logistics
         in Scotland required more than a single page.
       </p>
       <p>
@@ -1717,6 +1860,15 @@
         on GitHub Pages with a Google Sheets backend for form responses. No templates, no
         shortcuts. Bilingual, responsive, with custom animations and live forms.
       </p>
+      <p class="beyond-features-label">What guests could do</p>
+      <div class="beyond-features">
+        <div class="bfeature" data-preview="Beyond/🎥 Watch the ceremony from anywhere in the world.png"><span class="bfeature-icon">🎥</span><span class="bfeature-text">Watch the ceremony from anywhere</span></div>
+        <div class="bfeature" data-preview="Beyond/🗺️ Plan the trip to Scotland — transport, weather, where to stay.png"><span class="bfeature-icon">🗺️</span><span class="bfeature-text">Plan the trip to Scotland</span></div>
+        <div class="bfeature" data-preview="Beyond/✉️ RSVP directly on the site, no third-party service needed.png"><span class="bfeature-icon">✉️</span><span class="bfeature-text">RSVP directly on the site</span></div>
+        <div class="bfeature" data-preview="Beyond/🎁 Browse a gift list without a separate registry.png"><span class="bfeature-icon">🎁</span><span class="bfeature-text">Browse a curated gift list</span></div>
+        <div class="bfeature" data-preview="Beyond/📸 Upload and share photos from the day.png"><span class="bfeature-icon">📸</span><span class="bfeature-text">Upload and share photos</span></div>
+        <div class="bfeature" data-preview="Beyond/🌐 Read everything in Spanish or English.png" data-scale="1"><span class="bfeature-icon">🌐</span><span class="bfeature-text">Everything in Spanish or English</span></div>
+      </div>
       <div class="beyond-tags">
         <span class="btag">HTML / CSS / JS</span>
         <span class="btag">GitHub Pages</span>
@@ -1738,23 +1890,14 @@
 <!-- ════════════════════════ FOOTER / CONTACT ═══════════════ -->
 <footer id="contact">
   <div class="footer-name">Jami <span>Yalan</span></div>
-  <ul class="footer-links">
-    <li>
-      <a href="https://www.linkedin.com/in/jam-yln/" target="_blank" rel="noopener noreferrer">
-        ↗ LinkedIn
-      </a>
-    </li>
-    <li>
-      <a href="https://medium.com/@jam.yaln" target="_blank" rel="noopener noreferrer">
-        ↗ Medium
-      </a>
-    </li>
-    <li>
-      <a href="mailto:jam.yaln@gmail.com">
-        → Email
-      </a>
-    </li>
-  </ul>
+  <div class="footer-center">
+    <ul class="footer-links">
+      <li><a href="https://www.linkedin.com/in/jam-yln/" target="_blank" rel="noopener noreferrer">↗ LinkedIn</a></li>
+      <li><a href="https://medium.com/@jam.yaln" target="_blank" rel="noopener noreferrer">↗ Medium</a></li>
+      <li><button onclick="copyEmailFooter()">→ Email</button></li>
+    </ul>
+    <div class="footer-toast" id="footerToast">Copiado ✓</div>
+  </div>
   <div class="footer-copy">© 2025 Jami Yalan</div>
 </footer>
 
@@ -1772,6 +1915,7 @@
   </div>
   <button class="lightbox-btn lightbox-next" onclick="lbNext()"><svg width="8" height="14" viewBox="0 0 11 19" fill="none"><polyline points="2,1 10,9.5 2,18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <div class="lightbox-counter" id="lbCounter"></div>
+  <button class="lb-zoom-out-btn" id="lbZoomOutBtn">↙ Zoom out</button>
 </div>
 
 <script>
@@ -1798,6 +1942,15 @@
     });
   }
 
+  /* ── Copy email footer ──────────────────────────────────── */
+  function copyEmailFooter() {
+    navigator.clipboard.writeText('jam.yaln@gmail.com').catch(() => {});
+    const toast = document.getElementById('footerToast');
+    if (!toast) return;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
   /* ── Mobile nav ─────────────────────────────────────────── */
   const menuBtn   = document.getElementById('menuBtn');
   const mobileNav = document.getElementById('mobileNav');
@@ -1808,17 +1961,25 @@
 
   function closeNav() { mobileNav.classList.remove('open'); }
 
+  /* ── Scroll to card accounting for a collapsing card above it ── */
+  function scrollToCard(card, collapsingCard) {
+    // overflow-anchor:none on .case-list stops the browser adjusting scroll
+    // during the collapse. We wait for the transition to finish (550ms + buffer)
+    // then do a single clean scroll to the card's settled position.
+    const delay = collapsingCard ? 580 : 80;
+    setTimeout(() => {
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, delay);
+  }
+
   /* ── Open project from hero folder click ────────────────── */
   function openProject(index) {
     const cards = document.querySelectorAll('.case-card');
     if (!cards[index]) return;
-    // Close all, open the target
+    const openCard = document.querySelector('.case-card.open');
     document.querySelectorAll('.case-card.open').forEach(c => c.classList.remove('open'));
     cards[index].classList.add('open');
-    // Scroll after a short delay so the accordion has time to open
-    setTimeout(() => {
-      cards[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 80);
+    scrollToCard(cards[index], openCard);
   }
 
   /* ── Lightbox ───────────────────────────────────────────── */
@@ -1861,9 +2022,11 @@
     lbVideo.pause();
     lbVideo.src = '';
     lbWrap.classList.remove('is-video');
+    setZoomed(false);
   }
 
   function showLbItem() {
+    setZoomed(false);
     const items  = projectImages[lbProject];
     const src    = items[lbIndex];
     const isVid  = /\.(mp4|webm|mov)$/i.test(src);
@@ -1894,6 +2057,40 @@
 
   lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
 
+  const lbZoomOutBtn = document.getElementById('lbZoomOutBtn');
+  function setZoomed(on) {
+    lbWrap.classList.toggle('zoomed', on);
+    lbZoomOutBtn.classList.toggle('visible', on);
+  }
+  lbZoomOutBtn.addEventListener('click', () => setZoomed(false));
+
+  // Pan on drag when zoomed
+  let isPanning = false, panMoved = false, panStartX, panStartY, panScrollL, panScrollT;
+  lbWrap.addEventListener('mousedown', e => {
+    panMoved = false;
+    if (!lbWrap.classList.contains('zoomed') || lbWrap.classList.contains('is-video')) return;
+    isPanning = true;
+    panStartX = e.clientX; panStartY = e.clientY;
+    panScrollL = lbWrap.scrollLeft; panScrollT = lbWrap.scrollTop;
+    lbWrap.classList.add('panning');
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', e => {
+    if (!isPanning) return;
+    if (Math.abs(e.clientX - panStartX) > 3 || Math.abs(e.clientY - panStartY) > 3) panMoved = true;
+    lbWrap.scrollLeft = panScrollL - (e.clientX - panStartX);
+    lbWrap.scrollTop  = panScrollT - (e.clientY - panStartY);
+  });
+  document.addEventListener('mouseup', () => {
+    if (!isPanning) return;
+    isPanning = false;
+    lbWrap.classList.remove('panning');
+  });
+  lbWrap.addEventListener('click', () => {
+    if (lbWrap.classList.contains('is-video') || panMoved) return;
+    setZoomed(!lbWrap.classList.contains('zoomed'));
+  });
+
   document.addEventListener('keydown', e => {
     if (!lb.classList.contains('open')) return;
     if (e.key === 'Escape')      closeLightbox();
@@ -1905,12 +2102,13 @@
   function toggleCase(header) {
     const card   = header.closest('.case-card');
     const isOpen = card.classList.contains('open');
-
-    // Close all first
     document.querySelectorAll('.case-card.open').forEach(c => c.classList.remove('open'));
-
-    // Re-open if it wasn't already open
-    if (!isOpen) card.classList.add('open');
+    if (!isOpen) {
+      card.classList.add('open');
+      // Instantly place the card at the top of the viewport, then browser
+      // scroll anchoring keeps it there as the collapsing card shrinks above.
+      requestAnimationFrame(() => card.scrollIntoView({ behavior: 'instant', block: 'start' }));
+    }
   }
 
   /* ── Intersection Observer → fade-up ────────────────────── */
@@ -1931,6 +2129,35 @@
     topBtn.classList.toggle('visible', window.scrollY > 400);
   }, { passive: true });
   topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  /* ── Folder hover sound ── */
+  function playUISound() {
+    const ctx = new AudioContext();
+    const p = { type:"switch", tex:"vinyl", freq:830, dur:0.020, sweep:1.00, noise:0.00, vol:0.13 };
+    const now = ctx.currentTime + 0.01;
+    playOnce(ctx, p, now, 1, 1);
+    for (let i = 1; i <= 1; i++) {
+      playOnce(ctx, p, now + 0.080 * i, Math.pow(0.15, i), Math.pow(0.85, i));
+    }
+  }
+  function playOnce(ctx, p, t, vM, pM) {
+    const f = p.freq * pM, dur = p.dur, fE = Math.max(f * (1 - p.sweep * .75), 30);
+    const ms = ctx.createGain();
+    ms.gain.setValueAtTime(p.vol * vM, t);
+    ms.gain.exponentialRampToValueAtTime(0.0001, t + dur * 1.3);
+    ms.connect(ctx.destination);
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(f, t);
+    osc.frequency.exponentialRampToValueAtTime(fE, t + dur);
+    const og = ctx.createGain();
+    og.gain.setValueAtTime(0.9, t);
+    og.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    osc.connect(og); og.connect(ms); osc.start(t); osc.stop(t + dur + .06);
+  }
+  document.querySelectorAll('.folder-item').forEach(el => {
+    el.addEventListener('mouseenter', playUISound);
+  });
 
   /* ── Proximity cursor near hero folders ── */
   const proxyCursor = document.createElement('div');
@@ -1960,7 +2187,65 @@
     }
   }, { passive: true });
 
+  /* ── Beyond feature card preview swapper ── */
+  (function() {
+    const cards = document.querySelectorAll('.bfeature[data-preview]');
+    const previewImg = document.querySelector('.beyond-img img');
+    if (!cards.length || !previewImg) return;
+
+    const defaultSrc = previewImg.getAttribute('src');
+    const defaultScale = '1';
+    const featureScale = '1.26';
+    let locked = null;
+    let swapTimer = null;
+
+    function showPreview(src, scale) {
+      clearTimeout(swapTimer);
+      previewImg.style.opacity = '0';
+      swapTimer = setTimeout(() => {
+        previewImg.src = src;
+        previewImg.style.transform = 'scale(' + (scale || defaultScale) + ')';
+        previewImg.style.opacity = '1';
+      }, 110);
+    }
+
+    const hasHover = window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 901px)').matches;
+
+    cards.forEach(card => {
+      if (hasHover) {
+        card.addEventListener('mouseenter', () => {
+          if (!locked) showPreview(card.dataset.preview, card.dataset.scale || featureScale);
+        });
+        card.addEventListener('mouseleave', () => {
+          if (!locked) showPreview(defaultSrc, defaultScale);
+        });
+      }
+      card.addEventListener('click', e => {
+        e.stopPropagation();
+        if (locked === card) {
+          locked = null;
+          cards.forEach(c => c.classList.remove('bfeature-active'));
+          showPreview(defaultSrc, defaultScale);
+        } else {
+          locked = card;
+          cards.forEach(c => c.classList.remove('bfeature-active'));
+          card.classList.add('bfeature-active');
+          showPreview(card.dataset.preview, card.dataset.scale || featureScale);
+        }
+      });
+    });
+
+    document.addEventListener('click', () => {
+      if (locked) {
+        locked = null;
+        cards.forEach(c => c.classList.remove('bfeature-active'));
+        showPreview(defaultSrc, defaultScale);
+      }
+    });
+  })();
+
 </script>
+
 
 </body>
 </html>
